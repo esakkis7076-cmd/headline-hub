@@ -22,7 +22,7 @@ function TestsPage() {
   const tests = useQuery({ queryKey: ["tests"], queryFn: () => fetch() });
 
   const mut = useMutation({
-    mutationFn: (data: Parameters<typeof create>[0]["data"]) => create({ data }),
+    mutationFn: (data: { article_url: string; article_title?: string; section?: string; language: Lang; variants: { text: string; is_control?: boolean }[] }) => create({ data }),
     onSuccess: () => {
       toast.success("Test created and running");
       qc.invalidateQueries({ queryKey: ["tests"] });
