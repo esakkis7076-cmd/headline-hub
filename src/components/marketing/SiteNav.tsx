@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { TKLogo } from "./TKLogo";
 
 export function SiteNav() {
@@ -13,18 +14,12 @@ export function SiteNav() {
           <a href="#faq" className="hover:text-foreground transition">FAQ</a>
         </nav>
         <div className="flex items-center gap-2">
-          <a
-            href="#waitlist"
-            className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline"
-          >
+          <Link to="/login" className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline">
             Sign in
-          </a>
-          <a
-            href="#waitlist"
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary-light"
-          >
+          </Link>
+          <Link to="/login" className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary-light">
             Start free trial
-          </a>
+          </Link>
         </div>
       </div>
     </header>
