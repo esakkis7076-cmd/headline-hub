@@ -142,10 +142,10 @@ Return:
         language: data.language,
         overall_score: out.overall_score,
         position_zero_summary: out.position_zero_summary,
-        faq_schema: faqSchema,
+        faq_schema: faqSchema as never,
         discover_ready: out.discover_ready,
-        discover_checks: out.discover_checks,
-        raw_response: out as unknown as Record<string, unknown>,
+        discover_checks: out.discover_checks as never,
+        raw_response: out as never,
       })
       .select()
       .single();
