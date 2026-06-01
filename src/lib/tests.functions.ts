@@ -1,8 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { generateText, Output } from "ai";
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const LANGS = ["hi", "bn", "ta", "te", "mr", "gu", "kn", "ml", "pa", "en"] as const;
+type Lang = (typeof LANGS)[number];
+const LANG_NAMES: Record<Lang, string> = {
+  hi: "Hindi", bn: "Bengali", ta: "Tamil", te: "Telugu", mr: "Marathi",
+  gu: "Gujarati", kn: "Kannada", ml: "Malayalam", pa: "Punjabi", en: "English",
+};
 
 export const listTests = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
