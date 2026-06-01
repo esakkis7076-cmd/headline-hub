@@ -103,6 +103,19 @@ function NewTestModal({
   const [section, setSection] = useState("");
   const [language, setLanguage] = useState<Lang>("hi");
   const [variants, setVariants] = useState(["", ""]);
+  const suggest = useServerFn(suggestHeadlines);
+  const sugMut = useMutation({
+    mutationFn: () => suggest({ data: { article_url: url, article_title: title || undefined, language, control: variants[0] || undefined } }),
+    onSuccess: (res) => {
+      const newOnes = res.variants.map((v) => v.text);
+      setVariants((prev) => {
+        const control = prev[0] || newOnes[0];
+        return [control, ...newOnes.slice(prev[0] ? 0 : 1)].slice(0, 4);
+      });
+      toast.success("AI suggested 3 variants");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur p-4">
