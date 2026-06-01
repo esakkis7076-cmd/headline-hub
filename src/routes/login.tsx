@@ -74,7 +74,7 @@ function LoginPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-5 py-12">
       <div className="w-full max-w-md">
-        <Link to="/" className="flex items-center justify-center mb-8"><TKLogo /></Link>
+        <div className="flex items-center justify-center mb-8"><TKLogo /></div>
         <div className="rounded-2xl border border-border/60 bg-card/40 backdrop-blur p-8 shadow-2xl">
           <h1 className="font-serif text-3xl font-semibold tracking-tight">
             {mode === "signin" ? "Welcome back" : "Create your account"}
