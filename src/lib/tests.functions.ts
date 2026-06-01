@@ -113,7 +113,8 @@ export const suggestHeadlines = createServerFn({ method: "POST" })
     const gateway = createOpenAICompatible({
       name: "lovable",
       baseURL: "https://ai.gateway.lovable.dev/v1",
-      headers: { "Lovable-API-Key": apiKey, "X-Lovable-AIG-SDK": "vercel-ai-sdk" },
+      apiKey,
+      headers: { "X-Lovable-AIG-SDK": "vercel-ai-sdk" },
     });
     const model = gateway("google/gemini-2.5-flash");
     const langName = LANG_NAMES[data.language];
