@@ -3,8 +3,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { listTests, createTest } from "@/lib/tests.functions";
-import { Plus, X } from "lucide-react";
+import { listTests, createTest, suggestHeadlines } from "@/lib/tests.functions";
+import { Plus, X, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/tests")({
   component: TestsPage,
