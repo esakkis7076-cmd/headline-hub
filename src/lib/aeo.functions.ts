@@ -125,7 +125,11 @@ ${articleText || "(could not fetch article — base analysis on the URL slug and
 Return:
 - overall_score: 0-100 AEO score
 - position_zero_summary: a 40-55 word featured-snippet-ready summary in ${langName}
-- faqs: 4-6 Q&A pairs in ${langName} that an answer engine would surface
+- faqs: exactly 3-4 Q&A pairs in ${langName} that an answer engine would surface
+- headlines: an object with THREE headlines in ${langName} (native script), each 60-90 chars, truthful, no clickbait:
+    - discover: optimized for Google Discover (emotional hook, curiosity, entity-rich)
+    - seo: optimized for Google Search (front-load primary keyword, clear intent)
+    - social: optimized for social media / WhatsApp shares (punchy, conversational, share-worthy)
 - discover_ready: boolean
 - discover_checks: 5-7 specific checks (e.g., "E-E-A-T author byline present", "High-quality 1200x800 image", "Headline under 90 chars") with pass/fail and a one-line note
 - recommendations: 4-6 prioritized action items in ${langName}`;
