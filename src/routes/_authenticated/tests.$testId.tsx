@@ -60,6 +60,17 @@ function TestDetailPage() {
         }`}>{t.status}</span>
       </div>
 
+      {t.status === "running" && (
+        <div className="mt-6 flex flex-wrap gap-2">
+          <button onClick={() => simMut.mutate()} disabled={simMut.isPending} className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm hover:bg-accent disabled:opacity-50">
+            <Play size={14} /> {simMut.isPending ? "Simulating…" : "Simulate traffic"}
+          </button>
+          <button onClick={() => endMut.mutate()} disabled={endMut.isPending} className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+            <Trophy size={14} /> {endMut.isPending ? "Ending…" : "End test & declare winner"}
+          </button>
+        </div>
+      )}
+
       <div className="mt-8 grid grid-cols-3 gap-4">
         <Stat label="Impressions" value={totalImp.toLocaleString()} />
         <Stat label="Clicks" value={totalClicks.toLocaleString()} />
