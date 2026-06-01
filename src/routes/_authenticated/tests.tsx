@@ -157,7 +157,17 @@ function NewTestModal({
             </select>
           </div>
           <div className="space-y-2">
-            <div className="text-sm font-medium">Headline variants</div>
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-medium">Headline variants</div>
+              <button
+                type="button"
+                disabled={!url || sugMut.isPending}
+                onClick={() => sugMut.mutate()}
+                className="inline-flex items-center gap-1 text-xs rounded-md border border-border bg-card px-2 py-1 hover:bg-accent disabled:opacity-40"
+              >
+                <Sparkles size={12} /> {sugMut.isPending ? "Thinking…" : "Suggest with AI"}
+              </button>
+            </div>
             {variants.map((v, i) => (
               <div key={i} className="flex gap-2">
                 <span className="flex-shrink-0 w-7 h-9 inline-flex items-center justify-center rounded-md bg-muted text-xs font-medium">{String.fromCharCode(65 + i)}</span>
