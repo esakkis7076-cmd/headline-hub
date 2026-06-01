@@ -20,6 +20,8 @@ function AeoPage() {
   const [url, setUrl] = useState("");
   const [lang, setLang] = useState<Lang>("hi");
   const [recs, setRecs] = useState<string[] | null>(null);
+  const [headlines, setHeadlines] = useState<{ discover: string; seo: string; social: string } | null>(null);
+  const [faqs, setFaqs] = useState<{ question: string; answer: string }[] | null>(null);
 
   const history = useQuery({ queryKey: ["aeo"], queryFn: () => list() });
 
@@ -28,6 +30,8 @@ function AeoPage() {
     onSuccess: (res) => {
       toast.success("Analysis complete");
       setRecs(res.recommendations);
+      setHeadlines(res.headlines);
+      setFaqs(res.faqs);
       qc.invalidateQueries({ queryKey: ["aeo"] });
     },
     onError: (e: Error) => toast.error(e.message),
