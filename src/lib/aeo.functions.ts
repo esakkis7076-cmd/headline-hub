@@ -164,7 +164,7 @@ Return:
       .single();
     if (error) throw new Error(error.message);
 
-    return { analysis: row, recommendations: out.recommendations };
+    return { analysis: row, recommendations: out.recommendations, headlines: out.headlines, faqs: out.faqs };
   });
 
 export const listAnalyses = createServerFn({ method: "GET" })
