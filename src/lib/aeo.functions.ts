@@ -23,7 +23,12 @@ const LANG_NAMES: Record<Lang, string> = {
 const AeoSchema = z.object({
   overall_score: z.number().int().min(0).max(100),
   position_zero_summary: z.string(),
-  faqs: z.array(z.object({ question: z.string(), answer: z.string() })).min(3).max(8),
+  faqs: z.array(z.object({ question: z.string(), answer: z.string() })).min(3).max(4),
+  headlines: z.object({
+    discover: z.string(),
+    seo: z.string(),
+    social: z.string(),
+  }),
   discover_ready: z.boolean(),
   discover_checks: z.array(
     z.object({ label: z.string(), pass: z.boolean(), note: z.string().optional() }),
