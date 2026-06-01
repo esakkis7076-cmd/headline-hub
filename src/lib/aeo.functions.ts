@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { generateText, Output } from "ai";
+import { generateObject } from "ai";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -97,6 +97,7 @@ export const analyzeArticle = createServerFn({ method: "POST" })
       name: "lovable",
       baseURL: "https://ai.gateway.lovable.dev/v1",
       apiKey,
+      supportsStructuredOutputs: true,
       headers: {
         "X-Lovable-AIG-SDK": "vercel-ai-sdk",
       },
@@ -124,11 +125,14 @@ Return:
 - discover_checks: 5-7 specific checks (e.g., "E-E-A-T author byline present", "High-quality 1200x800 image", "Headline under 90 chars") with pass/fail and a one-line note
 - recommendations: 4-6 prioritized action items in ${langName}`;
 
-    const { experimental_output: out } = await generateText({
+    const { object: out } = await generateObject({
       model,
+      schema: AeoSchema,
+      schemaName: "aeo_analysis",
+      schemaDescription: "A complete AEO and Google Discover readiness report with the exact requested fields.",
       system,
       prompt,
-      experimental_output: Output.object({ schema: AeoSchema }),
+      temperature: 0.2,
     });
 
     const faqSchema = buildFaqSchema(out.faqs, data.article_url);
