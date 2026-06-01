@@ -20,6 +20,8 @@ function AeoPage() {
   const [url, setUrl] = useState("");
   const [lang, setLang] = useState<Lang>("hi");
   const [recs, setRecs] = useState<string[] | null>(null);
+  const [headlines, setHeadlines] = useState<{ discover: string; seo: string; social: string } | null>(null);
+  const [faqs, setFaqs] = useState<{ question: string; answer: string }[] | null>(null);
 
   const history = useQuery({ queryKey: ["aeo"], queryFn: () => list() });
 
@@ -28,6 +30,8 @@ function AeoPage() {
     onSuccess: (res) => {
       toast.success("Analysis complete");
       setRecs(res.recommendations);
+      setHeadlines(res.headlines);
+      setFaqs(res.faqs);
       qc.invalidateQueries({ queryKey: ["aeo"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -99,6 +103,36 @@ function AeoPage() {
             </ul>
           </div>
 
+          {headlines && (
+            <div className="rounded-2xl border border-border/60 bg-card/30 p-6">
+              <h2 className="font-semibold mb-4">Suggested headlines</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {([
+                  { key: "discover", label: "Google Discover", tint: "text-rose-400" },
+                  { key: "seo", label: "Search SEO", tint: "text-sky-400" },
+                  { key: "social", label: "Social / WhatsApp", tint: "text-emerald-400" },
+                ] as const).map((h) => (
+                  <HeadlineCard key={h.key} label={h.label} tint={h.tint} text={headlines[h.key]} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {faqs && faqs.length > 0 && (
+            <div className="rounded-2xl border border-border/60 bg-card/30 p-6">
+              <h2 className="font-semibold mb-3">FAQs ({faqs.length})</h2>
+              <ul className="space-y-4">
+                {faqs.map((f, i) => (
+                  <li key={i}>
+                    <div className="font-medium text-sm">{f.question}</div>
+                    <div className="text-sm text-muted-foreground mt-1">{f.answer}</div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+
           {recs && recs.length > 0 && (
             <div className="rounded-2xl border border-border/60 bg-card/30 p-6">
               <h2 className="font-semibold mb-3">Recommendations</h2>
@@ -151,6 +185,28 @@ function SchemaBlock({ schema }: { schema: unknown }) {
       </div>
       <pre className="overflow-auto rounded-lg bg-background/60 p-4 text-xs leading-relaxed max-h-80"><code>{json}</code></pre>
       <p className="mt-2 text-xs text-muted-foreground">Paste into your CMS template inside a &lt;script type="application/ld+json"&gt; tag.</p>
+    </div>
+  );
+}
+
+function HeadlineCard({ label, tint, text }: { label: string; tint: string; text: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <div className="rounded-xl border border-border/60 bg-background/40 p-4 flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <span className={`text-[11px] uppercase tracking-wider font-semibold ${tint}`}>{label}</span>
+        <button onClick={copy} className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-[11px] hover:bg-accent">
+          {copied ? <Check size={11} /> : <Copy size={11} />}
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+      <p className="text-sm leading-snug">{text}</p>
+      <div className="text-[11px] text-muted-foreground">{text.length} chars</div>
     </div>
   );
 }
