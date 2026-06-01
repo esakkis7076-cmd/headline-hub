@@ -103,6 +103,36 @@ function AeoPage() {
             </ul>
           </div>
 
+          {headlines && (
+            <div className="rounded-2xl border border-border/60 bg-card/30 p-6">
+              <h2 className="font-semibold mb-4">Suggested headlines</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {([
+                  { key: "discover", label: "Google Discover", tint: "text-rose-400" },
+                  { key: "seo", label: "Search SEO", tint: "text-sky-400" },
+                  { key: "social", label: "Social / WhatsApp", tint: "text-emerald-400" },
+                ] as const).map((h) => (
+                  <HeadlineCard key={h.key} label={h.label} tint={h.tint} text={headlines[h.key]} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {faqs && faqs.length > 0 && (
+            <div className="rounded-2xl border border-border/60 bg-card/30 p-6">
+              <h2 className="font-semibold mb-3">FAQs ({faqs.length})</h2>
+              <ul className="space-y-4">
+                {faqs.map((f, i) => (
+                  <li key={i}>
+                    <div className="font-medium text-sm">{f.question}</div>
+                    <div className="text-sm text-muted-foreground mt-1">{f.answer}</div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+
           {recs && recs.length > 0 && (
             <div className="rounded-2xl border border-border/60 bg-card/30 p-6">
               <h2 className="font-semibold mb-3">Recommendations</h2>
