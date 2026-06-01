@@ -9,11 +9,37 @@ export const getMyWorkspace = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
 
-    const { data: profile } = await supabase
+    let { data: profile } = await supabase
       .from("profiles")
       .select("*")
       .eq("user_id", userId)
       .maybeSingle();
+
+    if (!profile) {
+      const { data: ownedPublication } = await supabase
+        .from("publications")
+        .select("*")
+        .eq("owner_id", userId)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      const { data: restoredProfile, error: restoreError } = await supabase
+        .from("profiles")
+        .upsert(
+          {
+            user_id: userId,
+            email: context.claims?.email ?? null,
+            display_name: context.claims?.user_metadata?.full_name ?? context.claims?.user_metadata?.name ?? null,
+            publication_id: ownedPublication?.id ?? null,
+          },
+          { onConflict: "user_id" },
+        )
+        .select("*")
+        .single();
+      if (restoreError) throw new Error(restoreError.message);
+      profile = restoredProfile;
+    }
 
     let publication = null;
     if (profile?.publication_id) {
@@ -56,8 +82,16 @@ export const createPublication = createServerFn({ method: "POST" })
 
     const { error: profileError } = await supabase
       .from("profiles")
-      .update({ publication_id: pub.id })
-      .eq("user_id", userId);
+      .upsert(
+        {
+          user_id: userId,
+          email: context.claims?.email ?? null,
+          display_name: context.claims?.user_metadata?.full_name ?? context.claims?.user_metadata?.name ?? null,
+          publication_id: pub.id,
+          preferred_language: data.default_language,
+        },
+        { onConflict: "user_id" },
+      );
     if (profileError) throw new Error(profileError.message);
 
     return { publication: pub };
