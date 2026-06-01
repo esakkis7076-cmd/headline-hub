@@ -188,3 +188,25 @@ function SchemaBlock({ schema }: { schema: unknown }) {
     </div>
   );
 }
+
+function HeadlineCard({ label, tint, text }: { label: string; tint: string; text: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <div className="rounded-xl border border-border/60 bg-background/40 p-4 flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <span className={`text-[11px] uppercase tracking-wider font-semibold ${tint}`}>{label}</span>
+        <button onClick={copy} className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-[11px] hover:bg-accent">
+          {copied ? <Check size={11} /> : <Copy size={11} />}
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+      <p className="text-sm leading-snug">{text}</p>
+      <div className="text-[11px] text-muted-foreground">{text.length} chars</div>
+    </div>
+  );
+}
