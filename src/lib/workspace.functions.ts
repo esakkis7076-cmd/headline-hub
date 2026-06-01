@@ -8,6 +8,10 @@ export const getMyWorkspace = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
+    const claims = context.claims as {
+      email?: string;
+      user_metadata?: { full_name?: string; name?: string };
+    };
 
     let { data: profile } = await supabase
       .from("profiles")
@@ -29,8 +33,8 @@ export const getMyWorkspace = createServerFn({ method: "GET" })
         .upsert(
           {
             user_id: userId,
-            email: context.claims?.email ?? null,
-            display_name: context.claims?.user_metadata?.full_name ?? context.claims?.user_metadata?.name ?? null,
+            email: claims.email ?? null,
+            display_name: claims.user_metadata?.full_name ?? claims.user_metadata?.name ?? null,
             publication_id: ownedPublication?.id ?? null,
           },
           { onConflict: "user_id" },
@@ -67,6 +71,10 @@ export const createPublication = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    const claims = context.claims as {
+      email?: string;
+      user_metadata?: { full_name?: string; name?: string };
+    };
 
     const { data: pub, error } = await supabase
       .from("publications")
@@ -85,8 +93,8 @@ export const createPublication = createServerFn({ method: "POST" })
       .upsert(
         {
           user_id: userId,
-          email: context.claims?.email ?? null,
-          display_name: context.claims?.user_metadata?.full_name ?? context.claims?.user_metadata?.name ?? null,
+          email: claims.email ?? null,
+          display_name: claims.user_metadata?.full_name ?? claims.user_metadata?.name ?? null,
           publication_id: pub.id,
           preferred_language: data.default_language,
         },
