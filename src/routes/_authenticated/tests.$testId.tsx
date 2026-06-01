@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
-import { getTest } from "@/lib/tests.functions";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { getTest, endTest, simulateImpressions } from "@/lib/tests.functions";
+import { ArrowLeft, ExternalLink, Play, Trophy } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/tests/$testId")({
   component: TestDetailPage,
@@ -11,9 +12,22 @@ export const Route = createFileRoute("/_authenticated/tests/$testId")({
 function TestDetailPage() {
   const { testId } = Route.useParams();
   const fetch = useServerFn(getTest);
+  const end = useServerFn(endTest);
+  const sim = useServerFn(simulateImpressions);
+  const qc = useQueryClient();
   const q = useQuery({
     queryKey: ["test", testId],
     queryFn: () => fetch({ data: { id: testId } }),
+  });
+  const endMut = useMutation({
+    mutationFn: () => end({ data: { id: testId } }),
+    onSuccess: () => { toast.success("Winner declared"); qc.invalidateQueries({ queryKey: ["test", testId] }); qc.invalidateQueries({ queryKey: ["tests"] }); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const simMut = useMutation({
+    mutationFn: () => sim({ data: { id: testId } }),
+    onSuccess: () => { toast.success("Traffic simulated"); qc.invalidateQueries({ queryKey: ["test", testId] }); },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   if (q.isLoading) return <div className="p-10 text-sm text-muted-foreground">Loading…</div>;
@@ -45,6 +59,17 @@ function TestDetailPage() {
           "bg-muted text-muted-foreground"
         }`}>{t.status}</span>
       </div>
+
+      {t.status === "running" && (
+        <div className="mt-6 flex flex-wrap gap-2">
+          <button onClick={() => simMut.mutate()} disabled={simMut.isPending} className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm hover:bg-accent disabled:opacity-50">
+            <Play size={14} /> {simMut.isPending ? "Simulating…" : "Simulate traffic"}
+          </button>
+          <button onClick={() => endMut.mutate()} disabled={endMut.isPending} className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+            <Trophy size={14} /> {endMut.isPending ? "Ending…" : "End test & declare winner"}
+          </button>
+        </div>
+      )}
 
       <div className="mt-8 grid grid-cols-3 gap-4">
         <Stat label="Impressions" value={totalImp.toLocaleString()} />

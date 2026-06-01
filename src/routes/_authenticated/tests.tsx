@@ -3,8 +3,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { listTests, createTest } from "@/lib/tests.functions";
-import { Plus, X } from "lucide-react";
+import { listTests, createTest, suggestHeadlines } from "@/lib/tests.functions";
+import { Plus, X, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/tests")({
   component: TestsPage,
@@ -103,6 +103,19 @@ function NewTestModal({
   const [section, setSection] = useState("");
   const [language, setLanguage] = useState<Lang>("hi");
   const [variants, setVariants] = useState(["", ""]);
+  const suggest = useServerFn(suggestHeadlines);
+  const sugMut = useMutation({
+    mutationFn: () => suggest({ data: { article_url: url, article_title: title || undefined, language, control: variants[0] || undefined } }),
+    onSuccess: (res) => {
+      const newOnes = res.variants.map((v) => v.text);
+      setVariants((prev) => {
+        const control = prev[0] || newOnes[0];
+        return [control, ...newOnes.slice(prev[0] ? 0 : 1)].slice(0, 4);
+      });
+      toast.success("AI suggested 3 variants");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur p-4">
@@ -144,7 +157,17 @@ function NewTestModal({
             </select>
           </div>
           <div className="space-y-2">
-            <div className="text-sm font-medium">Headline variants</div>
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-medium">Headline variants</div>
+              <button
+                type="button"
+                disabled={!url || sugMut.isPending}
+                onClick={() => sugMut.mutate()}
+                className="inline-flex items-center gap-1 text-xs rounded-md border border-border bg-card px-2 py-1 hover:bg-accent disabled:opacity-40"
+              >
+                <Sparkles size={12} /> {sugMut.isPending ? "Thinking…" : "Suggest with AI"}
+              </button>
+            </div>
             {variants.map((v, i) => (
               <div key={i} className="flex gap-2">
                 <span className="flex-shrink-0 w-7 h-9 inline-flex items-center justify-center rounded-md bg-muted text-xs font-medium">{String.fromCharCode(65 + i)}</span>
