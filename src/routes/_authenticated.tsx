@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { TKLogo } from "@/components/marketing/TKLogo";
-import { LayoutDashboard, FlaskConical, Sparkles, LogOut, Settings, BarChart3, Menu, X } from "lucide-react";
+import { Sparkles, LogOut, Settings, Menu, X } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -11,9 +11,6 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 const NAV_ITEMS = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/tests", label: "Headline tests", icon: FlaskConical },
-  { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/aeo", label: "AEO analyzer", icon: Sparkles },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;

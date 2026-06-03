@@ -13,12 +13,8 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedTestsRouteImport } from './routes/_authenticated/tests'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedAeoRouteImport } from './routes/_authenticated/aeo'
-import { Route as AuthenticatedTestsTestIdRouteImport } from './routes/_authenticated/tests.$testId'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -39,24 +35,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedTestsRoute = AuthenticatedTestsRouteImport.update({
-  id: '/tests',
-  path: '/tests',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedAeoRoute = AuthenticatedAeoRouteImport.update({
@@ -64,34 +45,20 @@ const AuthenticatedAeoRoute = AuthenticatedAeoRouteImport.update({
   path: '/aeo',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedTestsTestIdRoute =
-  AuthenticatedTestsTestIdRouteImport.update({
-    id: '/$testId',
-    path: '/$testId',
-    getParentRoute: () => AuthenticatedTestsRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/aeo': typeof AuthenticatedAeoRoute
-  '/analytics': typeof AuthenticatedAnalyticsRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/tests': typeof AuthenticatedTestsRouteWithChildren
-  '/tests/$testId': typeof AuthenticatedTestsTestIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/aeo': typeof AuthenticatedAeoRoute
-  '/analytics': typeof AuthenticatedAnalyticsRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/tests': typeof AuthenticatedTestsRouteWithChildren
-  '/tests/$testId': typeof AuthenticatedTestsTestIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -100,35 +67,13 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/aeo': typeof AuthenticatedAeoRoute
-  '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
-  '/_authenticated/tests': typeof AuthenticatedTestsRouteWithChildren
-  '/_authenticated/tests/$testId': typeof AuthenticatedTestsTestIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/login'
-    | '/sitemap.xml'
-    | '/aeo'
-    | '/analytics'
-    | '/dashboard'
-    | '/settings'
-    | '/tests'
-    | '/tests/$testId'
+  fullPaths: '/' | '/login' | '/sitemap.xml' | '/aeo' | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/login'
-    | '/sitemap.xml'
-    | '/aeo'
-    | '/analytics'
-    | '/dashboard'
-    | '/settings'
-    | '/tests'
-    | '/tests/$testId'
+  to: '/' | '/login' | '/sitemap.xml' | '/aeo' | '/settings'
   id:
     | '__root__'
     | '/'
@@ -136,11 +81,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/sitemap.xml'
     | '/_authenticated/aeo'
-    | '/_authenticated/analytics'
-    | '/_authenticated/dashboard'
     | '/_authenticated/settings'
-    | '/_authenticated/tests'
-    | '/_authenticated/tests/$testId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -180,32 +121,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/tests': {
-      id: '/_authenticated/tests'
-      path: '/tests'
-      fullPath: '/tests'
-      preLoaderRoute: typeof AuthenticatedTestsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/analytics': {
-      id: '/_authenticated/analytics'
-      path: '/analytics'
-      fullPath: '/analytics'
-      preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/aeo': {
@@ -215,41 +135,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAeoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/tests/$testId': {
-      id: '/_authenticated/tests/$testId'
-      path: '/$testId'
-      fullPath: '/tests/$testId'
-      preLoaderRoute: typeof AuthenticatedTestsTestIdRouteImport
-      parentRoute: typeof AuthenticatedTestsRoute
-    }
   }
 }
 
-interface AuthenticatedTestsRouteChildren {
-  AuthenticatedTestsTestIdRoute: typeof AuthenticatedTestsTestIdRoute
-}
-
-const AuthenticatedTestsRouteChildren: AuthenticatedTestsRouteChildren = {
-  AuthenticatedTestsTestIdRoute: AuthenticatedTestsTestIdRoute,
-}
-
-const AuthenticatedTestsRouteWithChildren =
-  AuthenticatedTestsRoute._addFileChildren(AuthenticatedTestsRouteChildren)
-
 interface AuthenticatedRouteChildren {
   AuthenticatedAeoRoute: typeof AuthenticatedAeoRoute
-  AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
-  AuthenticatedTestsRoute: typeof AuthenticatedTestsRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAeoRoute: AuthenticatedAeoRoute,
-  AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
-  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
-  AuthenticatedTestsRoute: AuthenticatedTestsRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
