@@ -93,7 +93,35 @@ function SettingsPage() {
           </p>
         </section>
       )}
+
+      <section className="mt-6 rounded-2xl border border-border/60 bg-card/30 p-6">
+        <h2 className="font-semibold">Session</h2>
+        <p className="mt-1 text-sm text-muted-foreground">Sign out from your account on this device.</p>
+        <SignOutButton />
+      </section>
     </div>
+  );
+}
+
+function SignOutButton() {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [busy, setBusy] = useState(false);
+
+  const handle = async () => {
+    setBusy(true);
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate({ to: "/login", replace: true });
+  };
+
+  return (
+    <Button type="button" variant="outline" className="mt-4" onClick={handle} disabled={busy}>
+      <LogOut size={16} className="mr-2" />
+      {busy ? "Signing out…" : "Sign out"}
+    </Button>
   );
 }
 
