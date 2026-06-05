@@ -75,11 +75,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "TestKaro — Headline A/B testing for Indian language publishers" },
       { name: "description", content: "Test which headline gets the most clicks on your homepage — in Hindi, Tamil, Telugu, Kannada, Bengali, Marathi, Malayalam, Gujarati & English. Find the winner in 2-4 hours." },
       { name: "author", content: "TestKaro" },
-      { property: "og:title", content: "TestKaro — Better headlines. More clicks. Every Indian language." },
-      { property: "og:description", content: "Headline A/B testing + AEO for Indian newsrooms. Thompson Sampling, Quality Clicks, section-level insights." },
+      { property: "og:title", content: "TestKaro — Headline A/B testing for Indian language publishers" },
+      { property: "og:description", content: "Test which headline gets the most clicks on your homepage — in Hindi, Tamil, Telugu, Kannada, Bengali, Marathi, Malayalam, Gujarati & English. Find the winner in 2-4 hours." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "TestKaro — Headline A/B testing for Indian language publishers" },
+      { name: "twitter:description", content: "Test which headline gets the most clicks on your homepage — in Hindi, Tamil, Telugu, Kannada, Bengali, Marathi, Malayalam, Gujarati & English. Find the winner in 2-4 hours." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6fdcfa1c-6d7d-4d8f-aaa2-3d570b2ec642/id-preview-e4d9b0e7--843ea410-2184-4f11-a6b2-b111ba553ee6.lovable.app-1780311328741.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6fdcfa1c-6d7d-4d8f-aaa2-3d570b2ec642/id-preview-e4d9b0e7--843ea410-2184-4f11-a6b2-b111ba553ee6.lovable.app-1780311328741.png" },
     ],
     links: [
       {
