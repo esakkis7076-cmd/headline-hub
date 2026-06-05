@@ -2,11 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, LogOut } from "lucide-react";
 import { getMyWorkspace } from "@/lib/workspace.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
@@ -90,7 +93,35 @@ function SettingsPage() {
           </p>
         </section>
       )}
+
+      <section className="mt-6 rounded-2xl border border-border/60 bg-card/30 p-6">
+        <h2 className="font-semibold">Session</h2>
+        <p className="mt-1 text-sm text-muted-foreground">Sign out from your account on this device.</p>
+        <SignOutButton />
+      </section>
     </div>
+  );
+}
+
+function SignOutButton() {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [busy, setBusy] = useState(false);
+
+  const handle = async () => {
+    setBusy(true);
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate({ to: "/login", replace: true });
+  };
+
+  return (
+    <Button type="button" variant="outline" className="mt-4" onClick={handle} disabled={busy}>
+      <LogOut size={16} className="mr-2" />
+      {busy ? "Signing out…" : "Sign out"}
+    </Button>
   );
 }
 
