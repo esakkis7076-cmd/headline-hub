@@ -80,10 +80,13 @@ function NavList({ pathname, onClick }: { pathname: string; onClick?: () => void
 
 function SignOutButton() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const handle = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
     await supabase.auth.signOut();
     toast.success("Signed out");
-    navigate({ to: "/login" });
+    navigate({ to: "/login", replace: true });
   };
   return (
     <button
