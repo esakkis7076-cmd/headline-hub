@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { TKLogo } from "@/components/marketing/TKLogo";
 import { Sparkles, LogOut, Settings, Menu, X } from "lucide-react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthenticatedLayout,
