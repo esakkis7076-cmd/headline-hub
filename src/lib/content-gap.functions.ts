@@ -3,9 +3,10 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const UA = "TestKaroBot/1.0 (+https://testkaro.in)";
-const FETCH_TIMEOUT_MS = 8000;
-const TOTAL_TIME_MS = 60000;
-const MAX_URLS_PER_DOMAIN = 500;
+const FETCH_TIMEOUT_MS = 6000;
+const TOTAL_TIME_MS = 22000;
+const MAX_URLS_PER_DOMAIN = 250;
+const MAX_SITEMAP_CHILDREN = 3;
 
 // ───────────────────────────── shared helpers ─────────────────────────────
 
@@ -56,9 +57,10 @@ async function discoverArticleUrls(origin: string, host: string, deadline: numbe
     if (!xml) return;
     if (/<sitemapindex/i.test(xml)) {
       const children = parseLocs(xml);
-      children.sort((a, b) => Number(/news|article|post/i.test(b)) - Number(/news|article|post/i.test(a)));
-      for (const c of children.slice(0, 8)) {
+      children.sort((a, b) => Number(/news|article|post|recent/i.test(b)) - Number(/news|article|post|recent/i.test(a)));
+      for (const c of children.slice(0, MAX_SITEMAP_CHILDREN)) {
         if (collected.size >= MAX_URLS_PER_DOMAIN * 2) break;
+        if (Date.now() > deadline) break;
         await visit(c, depth + 1);
       }
     } else {
@@ -67,7 +69,8 @@ async function discoverArticleUrls(origin: string, host: string, deadline: numbe
   }
 
   for (const c of candidates) {
-    if (collected.size >= MAX_URLS_PER_DOMAIN * 2) break;
+    if (collected.size >= MAX_URLS_PER_DOMAIN) break;
+    if (Date.now() > deadline) break;
     await visit(c, 0);
   }
 
