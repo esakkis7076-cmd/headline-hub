@@ -39,13 +39,34 @@ function parseLocs(xml: string): string[] {
   return out;
 }
 
+async function sitemapsFromRobots(origin: string): Promise<string[]> {
+  const txt = await timedFetch(`${origin}/robots.txt`, 4000);
+  if (!txt) return [];
+  const out: string[] = [];
+  for (const line of txt.split(/\r?\n/)) {
+    const m = line.match(/^\s*sitemap\s*:\s*(\S+)/i);
+    if (m) out.push(m[1].trim());
+  }
+  return out;
+}
+
 async function discoverArticleUrls(origin: string, host: string, deadline: number): Promise<string[]> {
+  const fromRobots = await sitemapsFromRobots(origin);
   const candidates = [
+    ...fromRobots,
     `${origin}/sitemap.xml`,
     `${origin}/sitemap_index.xml`,
     `${origin}/sitemap-index.xml`,
+    `${origin}/sitemap/sitemap-index.xml`,
     `${origin}/news-sitemap.xml`,
+    `${origin}/sitemap/googlenews/all/all.xml`,
+    `${origin}/sitemap/update/all.xml`,
+    `${origin}/arc/outboundfeeds/sitemap/`,
   ];
+  // de-dupe while preserving order
+  const seenCand = new Set<string>();
+  const uniqueCandidates = candidates.filter((c) => (seenCand.has(c) ? false : (seenCand.add(c), true)));
+
   const collected = new Set<string>();
   const visited = new Set<string>();
 
@@ -68,7 +89,7 @@ async function discoverArticleUrls(origin: string, host: string, deadline: numbe
     }
   }
 
-  for (const c of candidates) {
+  for (const c of uniqueCandidates) {
     if (collected.size >= MAX_URLS_PER_DOMAIN) break;
     if (Date.now() > deadline) break;
     await visit(c, 0);
