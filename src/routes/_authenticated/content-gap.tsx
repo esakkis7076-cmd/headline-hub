@@ -58,7 +58,8 @@ function ContentGapPage() {
   const mut = useMutation({
     mutationFn: (d: { user_domain: string; competitor_domain: string }) => analyze({ data: d }),
     onSuccess: (res) => {
-      toast.success(`Analyzed: ${res.report.missing_topics.length} missing topics`);
+      const missing = Array.isArray(res.report.missing_topics) ? res.report.missing_topics.length : 0;
+      toast.success(`Analyzed: ${missing} missing topics`);
       setSelectedId(res.report.id);
       qc.invalidateQueries({ queryKey: ["content-gap-reports"] });
     },
