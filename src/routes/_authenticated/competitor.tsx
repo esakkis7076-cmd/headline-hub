@@ -146,7 +146,12 @@ function CompetitorPage() {
               Loading report…
             </div>
           )}
-          {report.data && <ReportView report={report.data.report} trend={trendQ.data?.trend ?? []} />}
+          {report.data && (
+            <ReportView
+              report={report.data.report as unknown as ReportRow}
+              trend={(trendQ.data?.trend ?? []) as unknown as TrendRow[]}
+            />
+          )}
         </div>
       </div>
     </div>
@@ -165,7 +170,9 @@ type ReportRow = {
   created_at: string;
 };
 
-function ReportView({ report, trend }: { report: ReportRow; trend: { created_at: string; category_counts: Record<Category, number>; headlines_collected: number }[] }) {
+type TrendRow = { created_at: string; category_counts: Record<Category, number>; headlines_collected: number };
+
+function ReportView({ report, trend }: { report: ReportRow; trend: TrendRow[] }) {
   const total = report.headlines_collected || 1;
 
   const categoryData = useMemo(
