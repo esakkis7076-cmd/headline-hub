@@ -3,9 +3,10 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const UA = "TestKaroBot/1.0 (+https://testkaro.in)";
-const FETCH_TIMEOUT_MS = 8000;
-const TOTAL_TIME_MS = 60000;
-const MAX_URLS_PER_DOMAIN = 500;
+const FETCH_TIMEOUT_MS = 6000;
+const TOTAL_TIME_MS = 22000;
+const MAX_URLS_PER_DOMAIN = 250;
+const MAX_SITEMAP_CHILDREN = 3;
 
 // ───────────────────────────── shared helpers ─────────────────────────────
 
@@ -56,9 +57,10 @@ async function discoverArticleUrls(origin: string, host: string, deadline: numbe
     if (!xml) return;
     if (/<sitemapindex/i.test(xml)) {
       const children = parseLocs(xml);
-      children.sort((a, b) => Number(/news|article|post/i.test(b)) - Number(/news|article|post/i.test(a)));
-      for (const c of children.slice(0, 8)) {
+      children.sort((a, b) => Number(/news|article|post|recent/i.test(b)) - Number(/news|article|post|recent/i.test(a)));
+      for (const c of children.slice(0, MAX_SITEMAP_CHILDREN)) {
         if (collected.size >= MAX_URLS_PER_DOMAIN * 2) break;
+        if (Date.now() > deadline) break;
         await visit(c, depth + 1);
       }
     } else {
@@ -67,7 +69,8 @@ async function discoverArticleUrls(origin: string, host: string, deadline: numbe
   }
 
   for (const c of candidates) {
-    if (collected.size >= MAX_URLS_PER_DOMAIN * 2) break;
+    if (collected.size >= MAX_URLS_PER_DOMAIN) break;
+    if (Date.now() > deadline) break;
     await visit(c, 0);
   }
 
@@ -195,7 +198,7 @@ Respond with ONLY the JSON object. No markdown, no prose.`;
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       }),
-      signal: AbortSignal.timeout(45000),
+      signal: AbortSignal.timeout(20000),
     });
     if (!res.ok) throw new Error(`AI ${res.status}`);
     const json = await res.json();
@@ -253,18 +256,18 @@ export const analyzeContentGap = createServerFn({ method: "POST" })
     if (u.host === c.host) throw new Error("User and competitor domains must differ");
 
     const start = Date.now();
-    const halfDeadline = start + TOTAL_TIME_MS / 2;
     const fullDeadline = start + TOTAL_TIME_MS;
 
+    console.log(`[content-gap] crawling ${u.host} and ${c.host}`);
     const [userUrls, competitorUrls] = await Promise.all([
-      discoverArticleUrls(u.origin, u.host, halfDeadline),
+      discoverArticleUrls(u.origin, u.host, fullDeadline),
       discoverArticleUrls(c.origin, c.host, fullDeadline),
     ]);
+    console.log(`[content-gap] discovered ${userUrls.length} / ${competitorUrls.length} URLs in ${Date.now() - start}ms`);
 
-    if (userUrls.length === 0 && competitorUrls.length === 0) {
-      throw new Error("Could not discover URLs from either domain. Both may lack sitemaps or block crawlers.");
+    if (competitorUrls.length === 0) {
+      throw new Error(`No URLs discovered for competitor ${c.host}. Sitemap may be missing or blocked.`);
     }
-    if (competitorUrls.length === 0) throw new Error(`No URLs discovered for competitor ${c.host}.`);
 
     const userTopics = extractTopics(userUrls);
     const competitorTopics = extractTopics(competitorUrls);
