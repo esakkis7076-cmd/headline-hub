@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedCompetitorRouteImport } from './routes/_authenticated/competitor'
 import { Route as AuthenticatedAeoRouteImport } from './routes/_authenticated/aeo'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -40,6 +41,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCompetitorRoute = AuthenticatedCompetitorRouteImport.update({
+  id: '/competitor',
+  path: '/competitor',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAeoRoute = AuthenticatedAeoRouteImport.update({
   id: '/aeo',
   path: '/aeo',
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/aeo': typeof AuthenticatedAeoRoute
+  '/competitor': typeof AuthenticatedCompetitorRoute
   '/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRoutesByTo {
@@ -58,6 +65,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/aeo': typeof AuthenticatedAeoRoute
+  '/competitor': typeof AuthenticatedCompetitorRoute
   '/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRoutesById {
@@ -67,13 +75,20 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/aeo': typeof AuthenticatedAeoRoute
+  '/_authenticated/competitor': typeof AuthenticatedCompetitorRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/sitemap.xml' | '/aeo' | '/settings'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/sitemap.xml'
+    | '/aeo'
+    | '/competitor'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/sitemap.xml' | '/aeo' | '/settings'
+  to: '/' | '/login' | '/sitemap.xml' | '/aeo' | '/competitor' | '/settings'
   id:
     | '__root__'
     | '/'
@@ -81,6 +96,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/sitemap.xml'
     | '/_authenticated/aeo'
+    | '/_authenticated/competitor'
     | '/_authenticated/settings'
   fileRoutesById: FileRoutesById
 }
@@ -128,6 +144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/competitor': {
+      id: '/_authenticated/competitor'
+      path: '/competitor'
+      fullPath: '/competitor'
+      preLoaderRoute: typeof AuthenticatedCompetitorRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/aeo': {
       id: '/_authenticated/aeo'
       path: '/aeo'
@@ -140,11 +163,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAeoRoute: typeof AuthenticatedAeoRoute
+  AuthenticatedCompetitorRoute: typeof AuthenticatedCompetitorRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAeoRoute: AuthenticatedAeoRoute,
+  AuthenticatedCompetitorRoute: AuthenticatedCompetitorRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
 }
 
@@ -161,13 +186,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

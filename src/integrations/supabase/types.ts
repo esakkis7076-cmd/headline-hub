@@ -70,6 +70,56 @@ export type Database = {
           },
         ]
       }
+      competitor_reports: {
+        Row: {
+          category_counts: Json
+          created_at: string
+          created_by: string
+          domain: string
+          emotional_triggers: Json
+          headlines_collected: number
+          id: string
+          length_buckets: Json
+          publication_id: string
+          sample_headlines: Json
+          top_patterns: Json
+        }
+        Insert: {
+          category_counts?: Json
+          created_at?: string
+          created_by: string
+          domain: string
+          emotional_triggers?: Json
+          headlines_collected?: number
+          id?: string
+          length_buckets?: Json
+          publication_id: string
+          sample_headlines?: Json
+          top_patterns?: Json
+        }
+        Update: {
+          category_counts?: Json
+          created_at?: string
+          created_by?: string
+          domain?: string
+          emotional_triggers?: Json
+          headlines_collected?: number
+          id?: string
+          length_buckets?: Json
+          publication_id?: string
+          sample_headlines?: Json
+          top_patterns?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competitor_reports_publication_id_fkey"
+            columns: ["publication_id"]
+            isOneToOne: false
+            referencedRelation: "publications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       headline_tests: {
         Row: {
           article_title: string | null
