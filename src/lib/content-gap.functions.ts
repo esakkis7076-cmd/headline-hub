@@ -256,18 +256,18 @@ export const analyzeContentGap = createServerFn({ method: "POST" })
     if (u.host === c.host) throw new Error("User and competitor domains must differ");
 
     const start = Date.now();
-    const halfDeadline = start + TOTAL_TIME_MS / 2;
     const fullDeadline = start + TOTAL_TIME_MS;
 
+    console.log(`[content-gap] crawling ${u.host} and ${c.host}`);
     const [userUrls, competitorUrls] = await Promise.all([
-      discoverArticleUrls(u.origin, u.host, halfDeadline),
+      discoverArticleUrls(u.origin, u.host, fullDeadline),
       discoverArticleUrls(c.origin, c.host, fullDeadline),
     ]);
+    console.log(`[content-gap] discovered ${userUrls.length} / ${competitorUrls.length} URLs in ${Date.now() - start}ms`);
 
-    if (userUrls.length === 0 && competitorUrls.length === 0) {
-      throw new Error("Could not discover URLs from either domain. Both may lack sitemaps or block crawlers.");
+    if (competitorUrls.length === 0) {
+      throw new Error(`No URLs discovered for competitor ${c.host}. Sitemap may be missing or blocked.`);
     }
-    if (competitorUrls.length === 0) throw new Error(`No URLs discovered for competitor ${c.host}.`);
 
     const userTopics = extractTopics(userUrls);
     const competitorTopics = extractTopics(competitorUrls);
