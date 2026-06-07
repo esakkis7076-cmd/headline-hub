@@ -198,7 +198,7 @@ Respond with ONLY the JSON object. No markdown, no prose.`;
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       }),
-      signal: AbortSignal.timeout(45000),
+      signal: AbortSignal.timeout(20000),
     });
     if (!res.ok) throw new Error(`AI ${res.status}`);
     const json = await res.json();
