@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedContentGapRouteImport } from './routes/_authenticated/content-gap'
 import { Route as AuthenticatedCompetitorRouteImport } from './routes/_authenticated/competitor'
 import { Route as AuthenticatedAeoRouteImport } from './routes/_authenticated/aeo'
 
@@ -41,6 +42,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedContentGapRoute = AuthenticatedContentGapRouteImport.update({
+  id: '/content-gap',
+  path: '/content-gap',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedCompetitorRoute = AuthenticatedCompetitorRouteImport.update({
   id: '/competitor',
   path: '/competitor',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/aeo': typeof AuthenticatedAeoRoute
   '/competitor': typeof AuthenticatedCompetitorRoute
+  '/content-gap': typeof AuthenticatedContentGapRoute
   '/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRoutesByTo {
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/aeo': typeof AuthenticatedAeoRoute
   '/competitor': typeof AuthenticatedCompetitorRoute
+  '/content-gap': typeof AuthenticatedContentGapRoute
   '/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRoutesById {
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/aeo': typeof AuthenticatedAeoRoute
   '/_authenticated/competitor': typeof AuthenticatedCompetitorRoute
+  '/_authenticated/content-gap': typeof AuthenticatedContentGapRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRouteTypes {
@@ -86,9 +95,17 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/aeo'
     | '/competitor'
+    | '/content-gap'
     | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/sitemap.xml' | '/aeo' | '/competitor' | '/settings'
+  to:
+    | '/'
+    | '/login'
+    | '/sitemap.xml'
+    | '/aeo'
+    | '/competitor'
+    | '/content-gap'
+    | '/settings'
   id:
     | '__root__'
     | '/'
@@ -97,6 +114,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/aeo'
     | '/_authenticated/competitor'
+    | '/_authenticated/content-gap'
     | '/_authenticated/settings'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +162,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/content-gap': {
+      id: '/_authenticated/content-gap'
+      path: '/content-gap'
+      fullPath: '/content-gap'
+      preLoaderRoute: typeof AuthenticatedContentGapRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/competitor': {
       id: '/_authenticated/competitor'
       path: '/competitor'
@@ -164,12 +189,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedAeoRoute: typeof AuthenticatedAeoRoute
   AuthenticatedCompetitorRoute: typeof AuthenticatedCompetitorRoute
+  AuthenticatedContentGapRoute: typeof AuthenticatedContentGapRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAeoRoute: AuthenticatedAeoRoute,
   AuthenticatedCompetitorRoute: AuthenticatedCompetitorRoute,
+  AuthenticatedContentGapRoute: AuthenticatedContentGapRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
 }
 

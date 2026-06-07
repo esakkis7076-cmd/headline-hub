@@ -120,6 +120,65 @@ export type Database = {
           },
         ]
       }
+      content_gap_reports: {
+        Row: {
+          competitor_domain: string
+          competitor_topics: Json
+          competitor_url_count: number
+          created_at: string
+          created_by: string
+          id: string
+          missing_topics: Json
+          publication_id: string
+          recommendations: Json
+          summary: string | null
+          under_covered_topics: Json
+          user_domain: string
+          user_topics: Json
+          user_url_count: number
+        }
+        Insert: {
+          competitor_domain: string
+          competitor_topics?: Json
+          competitor_url_count?: number
+          created_at?: string
+          created_by: string
+          id?: string
+          missing_topics?: Json
+          publication_id: string
+          recommendations?: Json
+          summary?: string | null
+          under_covered_topics?: Json
+          user_domain: string
+          user_topics?: Json
+          user_url_count?: number
+        }
+        Update: {
+          competitor_domain?: string
+          competitor_topics?: Json
+          competitor_url_count?: number
+          created_at?: string
+          created_by?: string
+          id?: string
+          missing_topics?: Json
+          publication_id?: string
+          recommendations?: Json
+          summary?: string | null
+          under_covered_topics?: Json
+          user_domain?: string
+          user_topics?: Json
+          user_url_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_gap_reports_publication_id_fkey"
+            columns: ["publication_id"]
+            isOneToOne: false
+            referencedRelation: "publications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       headline_tests: {
         Row: {
           article_title: string | null
