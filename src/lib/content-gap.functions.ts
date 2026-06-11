@@ -173,7 +173,7 @@ async function generateRecommendations(args: {
   missing: TopicEntry[];
   underCovered: { topic: string; user_count: number; competitor_count: number }[];
 }): Promise<{ recommendations: Recommendation[]; summary: string }> {
-  const apiKey = process.env.LOVABLE_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return {
       summary: `${args.competitorDomain} covers ${args.missing.length} topic clusters that ${args.userDomain} is not publishing on. Focus on the highest-frequency missing topics first.`,
