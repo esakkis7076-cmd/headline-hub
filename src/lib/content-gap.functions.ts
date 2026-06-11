@@ -165,7 +165,7 @@ function extractTopics(urls: string[], topN = 60): TopicEntry[] {
     .map(([topic, count]) => ({ topic, count }));
 }
 
-// ───────────────────────────── recommendation via Lovable AI ─────────────────────────────
+// ───────────────────────────── recommendation via Gemini ─────────────────────────────
 
 async function generateRecommendations(args: {
   userDomain: string;
