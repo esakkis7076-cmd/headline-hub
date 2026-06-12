@@ -93,18 +93,21 @@ export const analyzeArticle = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!profile?.publication_id) throw new Error("Create a publication first");
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) throw new Error("AI not configured (missing GEMINI_API_KEY)");
+    const apiKey = process.env.LOVABLE_API_KEY;
+    if (!apiKey) throw new Error("AI gateway not configured");
 
     const articleText = await fetchArticleText(data.article_url);
 
     const gateway = createOpenAICompatible({
-      name: "gemini",
-      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
+      name: "lovable",
+      baseURL: "https://ai.gateway.lovable.dev/v1",
       apiKey,
       supportsStructuredOutputs: true,
+      headers: {
+        "X-Lovable-AIG-SDK": "vercel-ai-sdk",
+      },
     });
-    const model = gateway("gemini-2.5-flash");
+    const model = gateway("google/gemini-2.5-flash");
 
     const langName = LANG_NAMES[data.language];
     const system = `You are TestKaro's AEO (Answer Engine Optimization) expert helping Indian news publishers rank in Google Discover, Google Search AI Overviews, ChatGPT, and Perplexity.

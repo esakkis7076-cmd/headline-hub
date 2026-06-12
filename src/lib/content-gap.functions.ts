@@ -165,7 +165,7 @@ function extractTopics(urls: string[], topN = 60): TopicEntry[] {
     .map(([topic, count]) => ({ topic, count }));
 }
 
-// ───────────────────────────── recommendation via Gemini ─────────────────────────────
+// ───────────────────────────── recommendation via Lovable AI ─────────────────────────────
 
 async function generateRecommendations(args: {
   userDomain: string;
@@ -173,7 +173,7 @@ async function generateRecommendations(args: {
   missing: TopicEntry[];
   underCovered: { topic: string; user_count: number; competitor_count: number }[];
 }): Promise<{ recommendations: Recommendation[]; summary: string }> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.LOVABLE_API_KEY;
   if (!apiKey) {
     return {
       summary: `${args.competitorDomain} covers ${args.missing.length} topic clusters that ${args.userDomain} is not publishing on. Focus on the highest-frequency missing topics first.`,
@@ -211,11 +211,11 @@ For the top 10 most strategic topics from the above, return JSON only matching t
 Respond with ONLY the JSON object. No markdown, no prose.`;
 
   try {
-    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: "gemini-2.5-flash",
+        model: "google/gemini-2.5-flash",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       }),
