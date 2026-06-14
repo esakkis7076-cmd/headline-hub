@@ -149,7 +149,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
           <TKLogo />
           <button onClick={onClose} aria-label="Close menu" className="text-muted-foreground"><X size={18} /></button>
         </div>
-        <div className="mt-6"><NavList pathname={path} onClick={onClose} /></div>
+        <div className="mt-6"><NavList pathname={path} email={user?.email} onClick={onClose} /></div>
         <div className="mt-auto border-t border-border/60 pt-4">
           <div className="px-2 text-xs text-muted-foreground truncate">{user?.email}</div>
           <div className="mt-2"><SignOutButton /></div>
