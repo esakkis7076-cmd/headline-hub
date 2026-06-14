@@ -21,6 +21,9 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [org, setOrg] = useState("");
+  const [phone, setPhone] = useState("");
+  const [referral, setReferral] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -44,7 +47,12 @@ function LoginPage() {
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/aeo`,
-            data: { full_name: cleanName },
+            data: {
+              full_name: cleanName,
+              organisation_name: org.trim() || null,
+              phone_number: phone.trim() || null,
+              referral_source: referral || null,
+            },
           },
         });
         if (error) throw error;
