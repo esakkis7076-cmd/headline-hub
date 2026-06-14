@@ -164,20 +164,88 @@ function AeoPage() {
         </div>
       )}
 
-      {!latest && history.data && history.data.analyses.length > 0 && (
+      {history.data && history.data.analyses.length > 0 && (
         <div className="mt-10">
-          <h2 className="font-semibold mb-3">Recent analyses</h2>
+          <h2 className="font-semibold mb-3">Recent generations</h2>
           <div className="space-y-2">
-            {history.data.analyses.slice(0, 10).map((a) => (
-              <div key={a.id} className="rounded-xl border border-border/60 bg-card/30 p-4 flex items-center justify-between gap-4">
-                <div className="min-w-0">
-                  <div className="text-sm truncate">{a.article_url}</div>
-                  <div className="text-xs text-muted-foreground">{new Date(a.created_at).toLocaleString()} · {a.language}</div>
-                </div>
-                <div className="text-2xl font-semibold tabular-nums text-primary">{a.overall_score}</div>
-              </div>
+            {history.data.analyses.slice(0, 20).map((a) => (
+              <RecentRow key={a.id} a={a} onRegenerate={regenerate} disabled={mut.isPending} />
             ))}
           </div>
+        </div>
+      )}
+
+      {limit && (
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
+          <div className="max-w-md w-full rounded-2xl border border-border bg-card p-6 shadow-2xl">
+            <h3 className="text-lg font-semibold">
+              {limit.kind === "BLOCKED" ? "Account suspended" : "Upgrade required"}
+            </h3>
+            <p className="mt-2 text-sm text-muted-foreground">{limit.text}</p>
+            <div className="mt-5 flex gap-2">
+              {limit.kind !== "BLOCKED" && (
+                <Link
+                  to="/pricing"
+                  onClick={() => setLimit(null)}
+                  className="flex-1 text-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  See plans
+                </Link>
+              )}
+              <button
+                onClick={() => setLimit(null)}
+                className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-accent"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RecentRow({
+  a,
+  onRegenerate,
+  disabled,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  a: any;
+  onRegenerate: (url: string, lang: string) => void;
+  disabled: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const hl = (a.raw_response?.headlines ?? {}) as { discover?: string; seo?: string; social?: string };
+  return (
+    <div className="rounded-xl border border-border/60 bg-card/30 p-4">
+      <div className="flex items-center justify-between gap-4">
+        <button onClick={() => setOpen((o) => !o)} className="flex-1 min-w-0 text-left">
+          <div className="text-sm truncate flex items-center gap-2">
+            <ChevronDown size={14} className={`transition ${open ? "rotate-180" : ""}`} />
+            {a.article_url}
+          </div>
+          <div className="text-xs text-muted-foreground ml-5">
+            {new Date(a.created_at).toLocaleString()} · {a.language}
+          </div>
+        </button>
+        <div className="flex items-center gap-3">
+          <div className="text-2xl font-semibold tabular-nums text-primary">{a.overall_score}</div>
+          <button
+            onClick={() => onRegenerate(a.article_url, a.language)}
+            disabled={disabled}
+            className="inline-flex items-center gap-1 rounded-md bg-muted px-2.5 py-1.5 text-xs hover:bg-accent disabled:opacity-50"
+          >
+            <RefreshCw size={12} /> Regenerate
+          </button>
+        </div>
+      </div>
+      {open && (hl.discover || hl.seo || hl.social) && (
+        <div className="mt-3 ml-5 grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+          {hl.discover && <div className="rounded bg-background/60 p-2"><b className="text-rose-400">Discover</b><div className="mt-1">{hl.discover}</div></div>}
+          {hl.seo && <div className="rounded bg-background/60 p-2"><b className="text-sky-400">SEO</b><div className="mt-1">{hl.seo}</div></div>}
+          {hl.social && <div className="rounded bg-background/60 p-2"><b className="text-emerald-400">Social</b><div className="mt-1">{hl.social}</div></div>}
         </div>
       )}
     </div>
