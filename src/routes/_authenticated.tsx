@@ -18,6 +18,8 @@ const NAV_ITEMS = [
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
+const ADMIN_EMAIL = "esakkis7076@gmail.com";
+
 function AuthenticatedLayout() {
   const { loading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
