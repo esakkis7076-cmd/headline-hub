@@ -56,10 +56,14 @@ function AuthenticatedLayout() {
   );
 }
 
-function NavList({ pathname, onClick }: { pathname: string; onClick?: () => void }) {
+function NavList({ pathname, email, onClick }: { pathname: string; email?: string | null; onClick?: () => void }) {
+  const items = [
+    ...NAV_ITEMS,
+    ...(email === ADMIN_EMAIL ? [{ to: "/admin" as const, label: "Admin", icon: Shield }] : []),
+  ];
   return (
     <nav className="flex flex-col gap-1">
-      {NAV_ITEMS.map((it) => {
+      {items.map((it) => {
         const active = pathname === it.to || pathname.startsWith(it.to + "/");
         const Icon = it.icon;
         return (
