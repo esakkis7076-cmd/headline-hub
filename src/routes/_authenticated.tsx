@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { TKLogo } from "@/components/marketing/TKLogo";
-import { Sparkles, LogOut, Settings, Menu, X, Target, GitCompare } from "lucide-react";
+import { Sparkles, LogOut, Settings, Menu, X, Target, GitCompare, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
