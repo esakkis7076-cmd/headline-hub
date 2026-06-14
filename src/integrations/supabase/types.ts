@@ -293,34 +293,85 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_blocked: boolean
+          admin_notes: string | null
+          api_calls_all_time: number
+          api_calls_this_month: number
+          api_calls_today: number
           created_at: string
           display_name: string | null
           email: string | null
           id: string
+          languages_used: string[]
+          last_active_date: string | null
+          manually_upgraded_by: string | null
+          organisation_name: string | null
+          payment_method: string | null
+          payment_status: string
+          phone_number: string | null
+          plan_tier: string
           preferred_language: Database["public"]["Enums"]["indic_language"]
           publication_id: string | null
+          referral_source: string | null
+          trial_end_date: string | null
+          trial_start_date: string | null
           updated_at: string
           user_id: string
+          utr_reference: string | null
         }
         Insert: {
+          account_blocked?: boolean
+          admin_notes?: string | null
+          api_calls_all_time?: number
+          api_calls_this_month?: number
+          api_calls_today?: number
           created_at?: string
           display_name?: string | null
           email?: string | null
           id?: string
+          languages_used?: string[]
+          last_active_date?: string | null
+          manually_upgraded_by?: string | null
+          organisation_name?: string | null
+          payment_method?: string | null
+          payment_status?: string
+          phone_number?: string | null
+          plan_tier?: string
           preferred_language?: Database["public"]["Enums"]["indic_language"]
           publication_id?: string | null
+          referral_source?: string | null
+          trial_end_date?: string | null
+          trial_start_date?: string | null
           updated_at?: string
           user_id: string
+          utr_reference?: string | null
         }
         Update: {
+          account_blocked?: boolean
+          admin_notes?: string | null
+          api_calls_all_time?: number
+          api_calls_this_month?: number
+          api_calls_today?: number
           created_at?: string
           display_name?: string | null
           email?: string | null
           id?: string
+          languages_used?: string[]
+          last_active_date?: string | null
+          manually_upgraded_by?: string | null
+          organisation_name?: string | null
+          payment_method?: string | null
+          payment_status?: string
+          phone_number?: string | null
+          plan_tier?: string
           preferred_language?: Database["public"]["Enums"]["indic_language"]
           publication_id?: string | null
+          referral_source?: string | null
+          trial_end_date?: string | null
+          trial_start_date?: string | null
           updated_at?: string
           user_id?: string
+          utr_reference?: string | null
         }
         Relationships: [
           {
@@ -421,6 +472,78 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_list_users: {
+        Args: never
+        Returns: {
+          account_blocked: boolean
+          admin_notes: string
+          api_calls_all_time: number
+          api_calls_this_month: number
+          api_calls_today: number
+          created_at: string
+          display_name: string
+          email: string
+          last_active_date: string
+          manually_upgraded_by: string
+          organisation_name: string
+          payment_method: string
+          payment_status: string
+          phone_number: string
+          plan_tier: string
+          preferred_language: string
+          referral_source: string
+          trial_end_date: string
+          trial_start_date: string
+          user_id: string
+          utr_reference: string
+        }[]
+      }
+      admin_summary_metrics: { Args: never; Returns: Json }
+      admin_update_user: {
+        Args: {
+          _account_blocked?: boolean
+          _admin_notes?: string
+          _payment_method?: string
+          _payment_status?: string
+          _plan_tier?: string
+          _trial_end_date?: string
+          _user_id: string
+          _utr_reference?: string
+        }
+        Returns: {
+          account_blocked: boolean
+          admin_notes: string | null
+          api_calls_all_time: number
+          api_calls_this_month: number
+          api_calls_today: number
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          languages_used: string[]
+          last_active_date: string | null
+          manually_upgraded_by: string | null
+          organisation_name: string | null
+          payment_method: string | null
+          payment_status: string
+          phone_number: string | null
+          plan_tier: string
+          preferred_language: Database["public"]["Enums"]["indic_language"]
+          publication_id: string | null
+          referral_source: string | null
+          trial_end_date: string | null
+          trial_start_date: string | null
+          updated_at: string
+          user_id: string
+          utr_reference: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       current_user_publication: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -428,6 +551,42 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      record_api_call: {
+        Args: { _lang?: string }
+        Returns: {
+          account_blocked: boolean
+          admin_notes: string | null
+          api_calls_all_time: number
+          api_calls_this_month: number
+          api_calls_today: number
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          languages_used: string[]
+          last_active_date: string | null
+          manually_upgraded_by: string | null
+          organisation_name: string | null
+          payment_method: string | null
+          payment_status: string
+          phone_number: string | null
+          plan_tier: string
+          preferred_language: Database["public"]["Enums"]["indic_language"]
+          publication_id: string | null
+          referral_source: string | null
+          trial_end_date: string | null
+          trial_start_date: string | null
+          updated_at: string
+          user_id: string
+          utr_reference: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
     }
     Enums: {
