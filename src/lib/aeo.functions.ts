@@ -88,10 +88,28 @@ export const analyzeArticle = createServerFn({ method: "POST" })
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("publication_id")
+      .select("publication_id, plan_tier, trial_end_date, account_blocked, api_calls_this_month, api_calls_all_time")
       .eq("user_id", userId)
       .maybeSingle();
     if (!profile?.publication_id) throw new Error("Create a publication first");
+
+    // Usage limit enforcement
+    if (profile.account_blocked) {
+      throw new Error("LIMIT:BLOCKED:Your account has been suspended. Contact support.");
+    }
+    const tier = profile.plan_tier ?? "trial";
+    if (tier === "free" && (profile.api_calls_all_time ?? 0) >= 3) {
+      throw new Error("LIMIT:FREE:You've used your 3 free headline sets. Upgrade to keep going.");
+    }
+    if (tier === "trial" && profile.trial_end_date && new Date(profile.trial_end_date) < new Date()) {
+      throw new Error("LIMIT:TRIAL:Your trial has ended. Choose a plan to continue.");
+    }
+    if (tier === "starter" && (profile.api_calls_this_month ?? 0) >= 50) {
+      throw new Error("LIMIT:STARTER:You've used all 50 headline sets this month. Upgrade to Growth for 200/month.");
+    }
+    if (tier === "growth" && (profile.api_calls_this_month ?? 0) >= 200) {
+      throw new Error("LIMIT:GROWTH:You've reached your 200/month limit. Upgrade to Enterprise for unlimited.");
+    }
 
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("AI gateway not configured");
