@@ -182,6 +182,10 @@ Return:
       .single();
     if (error) throw new Error(error.message);
 
+    // Increment counters (best-effort)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase as any).rpc("record_api_call", { _lang: data.language });
+
     return { analysis: row, recommendations: out.recommendations, headlines: out.headlines, faqs: out.faqs };
   });
 
