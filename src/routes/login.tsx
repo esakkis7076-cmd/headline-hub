@@ -128,14 +128,43 @@ function LoginPage() {
 
           <form onSubmit={handleEmail} className="space-y-3">
             {mode === "signup" && (
-              <input
-                type="text"
-                required
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/40"
-              />
+              <>
+                <input
+                  type="text"
+                  required
+                  placeholder="Your full name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                />
+                <input
+                  type="text"
+                  required
+                  placeholder="Organisation / newsroom (e.g. Dainik Bhaskar Digital)"
+                  value={org}
+                  onChange={(e) => setOrg(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                />
+                <input
+                  type="tel"
+                  placeholder="Phone / WhatsApp (for payment confirmation)"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                />
+                <select
+                  value={referral}
+                  onChange={(e) => setReferral(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                >
+                  <option value="">How did you hear about us?</option>
+                  <option value="LinkedIn">LinkedIn</option>
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Google Search">Google Search</option>
+                  <option value="Referred">Referred by someone</option>
+                  <option value="Other">Other</option>
+                </select>
+              </>
             )}
             <input
               type="email"
