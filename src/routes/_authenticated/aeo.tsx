@@ -1,10 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { analyzeArticle, listAnalyses } from "@/lib/aeo.functions";
-import { Sparkles, Copy, Check } from "lucide-react";
+import { Sparkles, Copy, Check, RefreshCw, ChevronDown } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/aeo")({
   component: AeoPage,
@@ -12,6 +12,12 @@ export const Route = createFileRoute("/_authenticated/aeo")({
 });
 
 type Lang = "hi" | "bn" | "ta" | "te" | "mr" | "gu" | "kn" | "ml" | "pa" | "en";
+
+function parseLimit(msg: string): { kind: string; text: string } | null {
+  if (!msg.startsWith("LIMIT:")) return null;
+  const [, kind, ...rest] = msg.split(":");
+  return { kind, text: rest.join(":").trim() };
+}
 
 function AeoPage() {
   const analyze = useServerFn(analyzeArticle);
@@ -22,6 +28,7 @@ function AeoPage() {
   const [recs, setRecs] = useState<string[] | null>(null);
   const [headlines, setHeadlines] = useState<{ discover: string; seo: string; social: string } | null>(null);
   const [faqs, setFaqs] = useState<{ question: string; answer: string }[] | null>(null);
+  const [limit, setLimit] = useState<{ kind: string; text: string } | null>(null);
 
   const history = useQuery({ queryKey: ["aeo"], queryFn: () => list() });
 
@@ -34,10 +41,21 @@ function AeoPage() {
       setFaqs(res.faqs);
       qc.invalidateQueries({ queryKey: ["aeo"] });
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => {
+      const parsed = parseLimit(e.message);
+      if (parsed) setLimit(parsed);
+      else toast.error(e.message);
+    },
   });
 
+  const regenerate = (u: string, l: string) => {
+    setUrl(u);
+    setLang(l as Lang);
+    mut.mutate({ article_url: u, language: l as Lang });
+  };
+
   const latest = mut.data?.analysis ?? history.data?.analyses[0];
+
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
