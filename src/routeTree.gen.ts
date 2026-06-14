@@ -17,6 +17,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedContentGapRouteImport } from './routes/_authenticated/content-gap'
 import { Route as AuthenticatedCompetitorRouteImport } from './routes/_authenticated/competitor'
 import { Route as AuthenticatedAeoRouteImport } from './routes/_authenticated/aeo'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -57,11 +58,17 @@ const AuthenticatedAeoRoute = AuthenticatedAeoRouteImport.update({
   path: '/aeo',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/aeo': typeof AuthenticatedAeoRoute
   '/competitor': typeof AuthenticatedCompetitorRoute
   '/content-gap': typeof AuthenticatedContentGapRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/aeo': typeof AuthenticatedAeoRoute
   '/competitor': typeof AuthenticatedCompetitorRoute
   '/content-gap': typeof AuthenticatedContentGapRoute
@@ -82,6 +90,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/aeo': typeof AuthenticatedAeoRoute
   '/_authenticated/competitor': typeof AuthenticatedCompetitorRoute
   '/_authenticated/content-gap': typeof AuthenticatedContentGapRoute
@@ -93,6 +102,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/sitemap.xml'
+    | '/admin'
     | '/aeo'
     | '/competitor'
     | '/content-gap'
@@ -102,6 +112,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/sitemap.xml'
+    | '/admin'
     | '/aeo'
     | '/competitor'
     | '/content-gap'
@@ -112,6 +123,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/sitemap.xml'
+    | '/_authenticated/admin'
     | '/_authenticated/aeo'
     | '/_authenticated/competitor'
     | '/_authenticated/content-gap'
@@ -183,10 +195,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAeoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAeoRoute: typeof AuthenticatedAeoRoute
   AuthenticatedCompetitorRoute: typeof AuthenticatedCompetitorRoute
   AuthenticatedContentGapRoute: typeof AuthenticatedContentGapRoute
@@ -194,6 +214,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAeoRoute: AuthenticatedAeoRoute,
   AuthenticatedCompetitorRoute: AuthenticatedCompetitorRoute,
   AuthenticatedContentGapRoute: AuthenticatedContentGapRoute,
