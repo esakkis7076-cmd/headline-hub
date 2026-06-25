@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, MessageCircle, Mail, Sparkles } from "lucide-react";
+import { Check, MessageCircle, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
@@ -164,31 +164,19 @@ function PricingPage() {
       </section>
 
       <section className="mx-auto max-w-3xl px-6 pb-16">
-        <div className="rounded-2xl border border-border/60 bg-card/40 p-7">
-          <h2 className="font-serif text-2xl font-semibold">Complete your subscription</h2>
+        <div className="rounded-2xl border border-border/60 bg-card/40 p-7 text-center">
+          <h2 className="font-serif text-2xl font-semibold">Questions? Talk to us on WhatsApp</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Trial ended or ready to go live? Pay via UPI, NEFT/IMPS or bank transfer — message us
-            on WhatsApp and we'll activate your plan within a few hours (Mon–Sat, IST).
+            Get a personalised walkthrough, payment help, or activation support on WhatsApp.
           </p>
-          <div className="mt-5 flex flex-col sm:flex-row gap-3">
-            <a
-              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(
-                "Hi TestKaro, I'd like to subscribe. My registered email is: ",
-              )}`}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-600"
-            >
-              <MessageCircle size={16} /> Pay via UPI / Bank — chat on WhatsApp
-            </a>
-            <a
-              href={`mailto:${EMAIL}?subject=${encodeURIComponent("TestKaro subscription")}`}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-semibold hover:bg-accent"
-            >
-              <Mail size={16} /> Email us
-            </a>
-          </div>
-          <p className="mt-3 text-[11px] text-muted-foreground">
-            After payment, share the UTR / transaction reference with us so we can mark your account paid.
-          </p>
+          <a
+            href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(
+              "Hi TestKaro, I have a question about pricing.",
+            )}`}
+            className="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-600"
+          >
+            <MessageCircle size={16} /> Chat on WhatsApp
+          </a>
         </div>
       </section>
     </div>
