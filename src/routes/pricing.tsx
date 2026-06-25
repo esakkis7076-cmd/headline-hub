@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, MessageCircle, Mail, Sparkles } from "lucide-react";
+import { Check, MessageCircle, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
