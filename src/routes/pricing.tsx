@@ -32,7 +32,7 @@ type Plan = {
   features: string[];
   popular?: boolean;
   cta: string;
-  ctaHref: string;
+  whatsappText: string;
 };
 
 const PLANS: Plan[] = [
@@ -48,7 +48,7 @@ const PLANS: Plan[] = [
       "Email support",
     ],
     cta: "Start free trial",
-    ctaHref: "/login",
+    whatsappText: "Hi, I'm interested in the Starter plan (₹5,000/month)",
   },
   {
     tier: "Growth",
@@ -64,7 +64,7 @@ const PLANS: Plan[] = [
       "Priority support",
     ],
     cta: "Start free trial",
-    ctaHref: "/login",
+    whatsappText: "Hi, I'm interested in the Growth plan (₹12,000/month)",
   },
   {
     tier: "Enterprise",
@@ -79,7 +79,7 @@ const PLANS: Plan[] = [
       "Dedicated account manager",
     ],
     cta: "Talk to sales",
-    ctaHref: `mailto:${EMAIL}`,
+    whatsappText: "Hi, I'd like to talk to sales about the Enterprise plan",
   },
 ];
 
@@ -137,7 +137,9 @@ function PricingPage() {
               ))}
             </ul>
             <a
-              href={p.ctaHref}
+              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(p.whatsappText)}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className={`mt-6 text-center rounded-lg px-4 py-2.5 text-sm font-semibold ${
                 p.popular
                   ? "bg-primary text-primary-foreground hover:bg-primary/90"
