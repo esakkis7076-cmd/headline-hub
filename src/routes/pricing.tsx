@@ -137,7 +137,9 @@ function PricingPage() {
               ))}
             </ul>
             <a
-              href={p.ctaHref}
+              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(p.whatsappText)}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className={`mt-6 text-center rounded-lg px-4 py-2.5 text-sm font-semibold ${
                 p.popular
                   ? "bg-primary text-primary-foreground hover:bg-primary/90"
