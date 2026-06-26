@@ -32,7 +32,7 @@ type Plan = {
   features: string[];
   popular?: boolean;
   cta: string;
-  ctaHref: string;
+  whatsappText: string;
 };
 
 const PLANS: Plan[] = [
@@ -48,7 +48,7 @@ const PLANS: Plan[] = [
       "Email support",
     ],
     cta: "Start free trial",
-    ctaHref: "/login",
+    whatsappText: "Hi, I'm interested in the Starter plan (₹5,000/month)",
   },
   {
     tier: "Growth",
@@ -64,7 +64,7 @@ const PLANS: Plan[] = [
       "Priority support",
     ],
     cta: "Start free trial",
-    ctaHref: "/login",
+    whatsappText: "Hi, I'm interested in the Growth plan (₹12,000/month)",
   },
   {
     tier: "Enterprise",
@@ -79,7 +79,7 @@ const PLANS: Plan[] = [
       "Dedicated account manager",
     ],
     cta: "Talk to sales",
-    ctaHref: `mailto:${EMAIL}`,
+    whatsappText: "Hi, I'd like to talk to sales about the Enterprise plan",
   },
 ];
 
