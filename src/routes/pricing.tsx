@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, MessageCircle, Sparkles } from "lucide-react";
+import { MessageCircle, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
@@ -23,65 +23,7 @@ export const Route = createFileRoute("/pricing")({
 
 const WHATSAPP = "+916380992671";
 const WHATSAPP_DIGITS = "916380992671";
-const EMAIL = "esakkis7076@gmail.com";
 
-type Plan = {
-  tier: string;
-  price: string;
-  per: string;
-  features: string[];
-  popular?: boolean;
-  cta: string;
-  ctaHref: string;
-};
-
-const PLANS: Plan[] = [
-  {
-    tier: "Starter",
-    price: "₹5,000",
-    per: "per month · billed monthly",
-    features: [
-      "2 languages",
-      "50 headline sets / month",
-      "SEO scoring",
-      "FAQ schema (AEO)",
-      "Email support",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/login",
-  },
-  {
-    tier: "Growth",
-    price: "₹12,000",
-    per: "per month · billed monthly",
-    popular: true,
-    features: [
-      "5 languages",
-      "200 headline sets / month",
-      "Section-level insights",
-      "AI style recommendations",
-      "AEO optimizer",
-      "Priority support",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/login",
-  },
-  {
-    tier: "Enterprise",
-    price: "₹30,000",
-    per: "per month · custom billing",
-    features: [
-      "All 9 languages",
-      "Unlimited headline sets",
-      "API access",
-      "Multi-site dashboard",
-      "Custom integrations",
-      "Dedicated account manager",
-    ],
-    cta: "Talk to sales",
-    ctaHref: `mailto:${EMAIL}`,
-  },
-];
 
 function PricingPage() {
   return (
@@ -110,51 +52,6 @@ function PricingPage() {
         </p>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-10 grid grid-cols-1 md:grid-cols-3 gap-5">
-        {PLANS.map((p) => (
-          <div
-            key={p.tier}
-            className={`relative rounded-2xl border p-7 flex flex-col ${
-              p.popular
-                ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
-                : "border-border/60 bg-card/30"
-            }`}
-          >
-            {p.popular && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-primary-foreground">
-                Most popular
-              </span>
-            )}
-            <div className="text-xs uppercase tracking-wider text-muted-foreground">{p.tier}</div>
-            <div className="mt-2 text-4xl font-semibold tabular-nums">{p.price}</div>
-            <div className="text-xs text-muted-foreground">{p.per}</div>
-            <ul className="mt-5 space-y-2 text-sm flex-1">
-              {p.features.map((f) => (
-                <li key={f} className="flex items-start gap-2">
-                  <Check size={14} className="mt-0.5 text-emerald-400 shrink-0" />
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-            <a
-              href={p.ctaHref}
-              className={`mt-6 text-center rounded-lg px-4 py-2.5 text-sm font-semibold ${
-                p.popular
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "border border-border hover:bg-accent"
-              }`}
-            >
-              {p.cta}
-            </a>
-            <div className="mt-4 rounded-lg border border-dashed border-border/70 bg-background/40 p-3 text-[11px] text-muted-foreground">
-              Pay via UPI / Bank Transfer? WhatsApp us at{" "}
-              <a className="text-primary hover:underline" href={`https://wa.me/${WHATSAPP_DIGITS}`}>{WHATSAPP}</a>{" "}
-              or email{" "}
-              <a className="text-primary hover:underline" href={`mailto:${EMAIL}`}>{EMAIL}</a>.
-            </div>
-          </div>
-        ))}
-      </section>
 
       <section className="mx-auto max-w-3xl px-6 pb-10">
         <p className="text-center text-sm text-muted-foreground">
