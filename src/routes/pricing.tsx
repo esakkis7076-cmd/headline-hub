@@ -52,51 +52,6 @@ function PricingPage() {
         </p>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-10 grid grid-cols-1 md:grid-cols-3 gap-5">
-        {PLANS.map((p) => (
-          <div
-            key={p.tier}
-            className={`relative rounded-2xl border p-7 flex flex-col ${
-              p.popular
-                ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
-                : "border-border/60 bg-card/30"
-            }`}
-          >
-            {p.popular && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-primary-foreground">
-                Most popular
-              </span>
-            )}
-            <div className="text-xs uppercase tracking-wider text-muted-foreground">{p.tier}</div>
-            <div className="mt-2 text-4xl font-semibold tabular-nums">{p.price}</div>
-            <div className="text-xs text-muted-foreground">{p.per}</div>
-            <ul className="mt-5 space-y-2 text-sm flex-1">
-              {p.features.map((f) => (
-                <li key={f} className="flex items-start gap-2">
-                  <Check size={14} className="mt-0.5 text-emerald-400 shrink-0" />
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-            <a
-              href={p.ctaHref}
-              className={`mt-6 text-center rounded-lg px-4 py-2.5 text-sm font-semibold ${
-                p.popular
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "border border-border hover:bg-accent"
-              }`}
-            >
-              {p.cta}
-            </a>
-            <div className="mt-4 rounded-lg border border-dashed border-border/70 bg-background/40 p-3 text-[11px] text-muted-foreground">
-              Pay via UPI / Bank Transfer? WhatsApp us at{" "}
-              <a className="text-primary hover:underline" href={`https://wa.me/${WHATSAPP_DIGITS}`}>{WHATSAPP}</a>{" "}
-              or email{" "}
-              <a className="text-primary hover:underline" href={`mailto:${EMAIL}`}>{EMAIL}</a>.
-            </div>
-          </div>
-        ))}
-      </section>
 
       <section className="mx-auto max-w-3xl px-6 pb-10">
         <p className="text-center text-sm text-muted-foreground">
