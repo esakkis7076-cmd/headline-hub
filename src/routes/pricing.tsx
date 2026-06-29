@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, MessageCircle, Sparkles } from "lucide-react";
+import { MessageCircle, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
@@ -23,65 +23,7 @@ export const Route = createFileRoute("/pricing")({
 
 const WHATSAPP = "+916380992671";
 const WHATSAPP_DIGITS = "916380992671";
-const EMAIL = "esakkis7076@gmail.com";
 
-type Plan = {
-  tier: string;
-  price: string;
-  per: string;
-  features: string[];
-  popular?: boolean;
-  cta: string;
-  ctaHref: string;
-};
-
-const PLANS: Plan[] = [
-  {
-    tier: "Starter",
-    price: "₹5,000",
-    per: "per month · billed monthly",
-    features: [
-      "2 languages",
-      "50 headline sets / month",
-      "SEO scoring",
-      "FAQ schema (AEO)",
-      "Email support",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/login",
-  },
-  {
-    tier: "Growth",
-    price: "₹12,000",
-    per: "per month · billed monthly",
-    popular: true,
-    features: [
-      "5 languages",
-      "200 headline sets / month",
-      "Section-level insights",
-      "AI style recommendations",
-      "AEO optimizer",
-      "Priority support",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/login",
-  },
-  {
-    tier: "Enterprise",
-    price: "₹30,000",
-    per: "per month · custom billing",
-    features: [
-      "All 9 languages",
-      "Unlimited headline sets",
-      "API access",
-      "Multi-site dashboard",
-      "Custom integrations",
-      "Dedicated account manager",
-    ],
-    cta: "Talk to sales",
-    ctaHref: `mailto:${EMAIL}`,
-  },
-];
 
 function PricingPage() {
   return (
