@@ -72,6 +72,11 @@ const HTML = `<style>
     padding: 0 2.5rem;
     height: 56px;
   }
+  @media (max-width: 900px) {
+    nav {
+      padding: 0 1.1rem;
+    }
+  }
 
   .nav-logo {
     font-family: 'Playfair Display', serif;
@@ -131,6 +136,11 @@ const HTML = `<style>
     gap: 4rem;
     align-items: start;
   }
+  @media (max-width: 900px) {
+    .hero {
+      padding: 2.8rem 1.1rem 2.2rem;
+    }
+  }
 
   .hero-kicker {
     font-family: 'DM Mono', monospace;
@@ -181,6 +191,17 @@ const HTML = `<style>
     gap: 0.75rem;
     flex-wrap: wrap;
     margin-bottom: 2rem;
+  }
+  @media (max-width: 640px) {
+    .hero-btns {
+      flex-direction: column;
+    }
+    .hero-btns a,
+    .hero-btns .btn-primary,
+    .hero-btns .btn-ghost {
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   .btn-primary {
@@ -425,6 +446,11 @@ const HTML = `<style>
     margin: 0 auto;
     padding: 3.5rem 2.5rem;
   }
+  @media (max-width: 900px) {
+    .section {
+      padding: 2.6rem 1.1rem;
+    }
+  }
 
   .section-eyebrow {
     font-family: 'DM Mono', monospace;
@@ -462,6 +488,20 @@ const HTML = `<style>
     border: 1.5px solid var(--rule-heavy);
     border-radius: 3px;
     overflow: hidden;
+  }
+  @media (max-width: 640px) {
+    .steps-grid {
+      grid-template-columns: 1fr;
+    }
+    .steps-grid .step-cell:nth-child(n) {
+      border-right: none;
+    }
+    .steps-grid .step-cell:nth-child(n+4) {
+      border-bottom: 1px solid var(--rule);
+    }
+    .steps-grid .step-cell:last-child {
+      border-bottom: none;
+    }
   }
 
   .step-cell {
@@ -524,6 +564,11 @@ const HTML = `<style>
     border-radius: 3px;
     overflow: hidden;
     margin-top: 2rem;
+  }
+  @media (max-width: 640px) {
+    .lang-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   .lang-tile {
@@ -613,6 +658,14 @@ const HTML = `<style>
     border-radius: 3px;
     overflow: hidden;
     margin-top: 2rem;
+  }
+  @media (max-width: 640px) {
+    .pricing-grid {
+      grid-template-columns: 1fr;
+    }
+    .pricing-card {
+      padding: 1.5rem 1.2rem;
+    }
   }
 
   .pricing-card {
@@ -753,6 +806,14 @@ const HTML = `<style>
     position: relative;
     overflow: hidden;
   }
+  @media (max-width: 900px) {
+    .cta-section {
+      padding: 3rem 1.1rem;
+    }
+    .cta-section::before {
+      font-size: 8rem;
+    }
+  }
   .cta-section::before {
     content: 'TestKaro';
     position: absolute;
@@ -817,6 +878,14 @@ const HTML = `<style>
     align-items: center;
     justify-content: space-between;
   }
+  @media (max-width: 720px) {
+    footer {
+      padding: 1.5rem 1.1rem;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+  }
   .footer-brand {
     font-family: 'Playfair Display', serif;
     font-weight: 900;
@@ -878,6 +947,27 @@ const HTML = `<style>
     .pricing-grid { grid-template-columns: 1fr; }
     .lang-grid { grid-template-columns: repeat(3, 1fr); }
     nav .nav-links { display: none; }
+  }
+  @media (max-width: 640px) {
+    .hero { gap: 2rem; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .stats-inner { grid-template-columns: 1fr; }
+    .stat-item {
+      border-right: none;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 1rem 0;
+    }
+    .stat-item:last-child { border-bottom: none; }
+    .lang-grid { grid-template-columns: repeat(2, 1fr); }
+    .honest-grid { gap: 1rem; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .price-popular-badge { top: 1rem; right: 1rem; }
+    .cta-form { flex-direction: column; }
+    .cta-input {
+      min-width: 0;
+      max-width: none;
+      width: 100%;
+    }
   }
 
 </style>
@@ -1101,7 +1191,7 @@ const HTML = `<style>
     <p class="section-sub">14-day free trial on every plan. No credit card required. No hidden setup fees.</p>
 
     <div class="pricing-grid">
-      <div class="pricing-card">
+      <div class="pricing-card" style="display:flex; flex-direction:column; height:100%;">
         <div class="price-tier">Starter</div>
         <div class="price-amount">₹5,000</div>
         <div class="price-per">per month · billed monthly</div>
@@ -1112,10 +1202,10 @@ const HTML = `<style>
           <li><span class="check-icon">✓</span> FAQ schema (AEO)</li>
           <li><span class="check-icon">✓</span> Email support</li>
         </ul>
-        <a href="/login" class="price-btn price-btn-outline">Start free trial</a>
+        <a href="https://wa.me/916380992671?text=Hi%20TestKaro%2C%20I%20want%20to%20discuss%20the%20Starter%20plan." target="_blank" rel="noreferrer" class="price-btn price-btn-outline" style="margin-top:auto;">Contact us</a>
       </div>
 
-      <div class="pricing-card popular">
+      <div class="pricing-card popular" style="display:flex; flex-direction:column; height:100%;">
         <span class="price-popular-badge">Most popular</span>
         <div class="price-tier">Growth</div>
         <div class="price-amount">₹12,000</div>
@@ -1128,10 +1218,10 @@ const HTML = `<style>
           <li><span class="check-icon">✓</span> AEO optimizer</li>
           <li><span class="check-icon">✓</span> Priority support</li>
         </ul>
-        <a href="/login" class="price-btn price-btn-solid">Start free trial</a>
+        <a href="https://wa.me/916380992671?text=Hi%20TestKaro%2C%20I%20want%20to%20discuss%20the%20Growth%20plan." target="_blank" rel="noreferrer" class="price-btn price-btn-solid" style="margin-top:auto;">Contact us</a>
       </div>
 
-      <div class="pricing-card">
+      <div class="pricing-card" style="display:flex; flex-direction:column; height:100%;">
         <div class="price-tier">Enterprise</div>
         <div class="price-amount">₹30,000</div>
         <div class="price-per">per month · custom billing</div>
@@ -1143,7 +1233,7 @@ const HTML = `<style>
           <li><span class="check-icon">✓</span> Custom integrations</li>
           <li><span class="check-icon">✓</span> Dedicated account manager</li>
         </ul>
-        <a href="mailto:hello@testkaro.app" class="price-btn price-btn-outline">Talk to sales</a>
+        <a href="https://wa.me/916380992671?text=Hi%20TestKaro%2C%20I%20want%20to%20discuss%20the%20Enterprise%20plan." target="_blank" rel="noreferrer" class="price-btn price-btn-outline" style="margin-top:auto;">Talk to sales</a>
       </div>
     </div>
   </div>

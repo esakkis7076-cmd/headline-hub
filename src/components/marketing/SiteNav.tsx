@@ -10,7 +10,6 @@ export function SiteNav() {
           <a href="#how" className="hover:text-foreground transition">How it works</a>
           <a href="#languages" className="hover:text-foreground transition">Languages</a>
           <a href="#sections" className="hover:text-foreground transition">Section insights</a>
-          <a href="#pricing" className="hover:text-foreground transition">Pricing</a>
           <a href="#faq" className="hover:text-foreground transition">FAQ</a>
         </nav>
         <div className="flex items-center gap-2">
