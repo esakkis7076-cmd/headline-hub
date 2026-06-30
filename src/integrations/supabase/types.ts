@@ -313,6 +313,7 @@ export type Database = {
           preferred_language: Database["public"]["Enums"]["indic_language"]
           publication_id: string | null
           referral_source: string | null
+          selected_languages: Database["public"]["Enums"]["indic_language"][] | null
           trial_end_date: string | null
           trial_start_date: string | null
           updated_at: string
@@ -340,6 +341,7 @@ export type Database = {
           preferred_language?: Database["public"]["Enums"]["indic_language"]
           publication_id?: string | null
           referral_source?: string | null
+          selected_languages?: Database["public"]["Enums"]["indic_language"][] | null
           trial_end_date?: string | null
           trial_start_date?: string | null
           updated_at?: string
@@ -367,6 +369,7 @@ export type Database = {
           preferred_language?: Database["public"]["Enums"]["indic_language"]
           publication_id?: string | null
           referral_source?: string | null
+          selected_languages?: Database["public"]["Enums"]["indic_language"][] | null
           trial_end_date?: string | null
           trial_start_date?: string | null
           updated_at?: string

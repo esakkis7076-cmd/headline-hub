@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
       },
     ],
     meta: [
-      { title: "TestKaro — AI Headline Optimizer for Indian Newsrooms" },
+      { title: "Story Pulse — AI Headline Optimizer for Indian Newsrooms" },
       { name: "description", content: "AI generates platform-specific headlines for Search, Social & WhatsApp in 9 Indian languages. SEO score + FAQ schema in 30 seconds. Zero integration." },
     ],
   }),
@@ -815,7 +815,7 @@ const HTML = `<style>
     }
   }
   .cta-section::before {
-    content: 'TestKaro';
+    content: 'Story Pulse';
     position: absolute;
     font-family: 'Playfair Display', serif;
     font-size: 14rem;
@@ -899,6 +899,15 @@ const HTML = `<style>
     color: rgba(245,240,232,0.2);
     letter-spacing: 0.06em;
   }
+  .footer-email {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(245,240,232,0.4);
+    margin-top: 0.5rem;
+  }
+  .footer-email:hover {
+    color: var(--accent);
+  }
 
   /* ── ANIMATIONS ── */
   @keyframes fadeUp {
@@ -973,7 +982,7 @@ const HTML = `<style>
 </style>
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">Test<span>Karo</span></a>
+  <a href="#" class="nav-logo">Story<span> Pulse</span></a>
   <ul class="nav-links">
     <li><a href="#how">How it works</a></li>
     <li><a href="#languages">Languages</a></li>
@@ -984,7 +993,7 @@ const HTML = `<style>
 </nav>
 
 <!-- DATELINE -->
-<div class="dateline">TESTKARO · AI HEADLINE OPTIMIZER · BUILT FOR INDIAN NEWSROOMS · 9 LANGUAGES · ZERO INTEGRATION</div>
+<div class="dateline">STORY PULSE · AI HEADLINE OPTIMIZER · BUILT FOR INDIAN NEWSROOMS · 9 LANGUAGES · ZERO INTEGRATION</div>
 
 <!-- HERO -->
 <div class="hero">
@@ -1013,7 +1022,7 @@ const HTML = `<style>
       <div class="demo-dot r"></div>
       <div class="demo-dot y"></div>
       <div class="demo-dot g"></div>
-      <span class="demo-url">testkaro.app · live preview</span>
+      <span class="demo-url">storypulse.app · live preview</span>
     </div>
     <div class="demo-body">
       <div class="demo-label">Article URL pasted ↓</div>
@@ -1096,7 +1105,7 @@ const HTML = `<style>
     <div class="step-cell">
       <span class="step-num">01</span>
       <div class="step-title">Paste your article URL</div>
-      <div class="step-desc">Open TestKaro, paste any article URL. That's the only step that requires you. We fetch and read the article automatically.</div>
+      <div class="step-desc">Open Story Pulse, paste any article URL. That's the only step that requires you. We fetch and read the article automatically.</div>
     </div>
     <div class="step-cell">
       <span class="step-num">02</span>
@@ -1154,7 +1163,7 @@ const HTML = `<style>
 <!-- HONEST SECTION -->
 <div class="section reveal">
   <div class="section-eyebrow">Honest transparency</div>
-  <h2>What TestKaro does —<br>and what it <em>doesn't.</em></h2>
+  <h2>What Story Pulse does —<br>and what it <em>doesn't.</em></h2>
   <p class="section-sub">We refuse to over-promise. Here's exactly what you get and what we can't do directly.</p>
 
   <div class="honest-grid">
@@ -1202,7 +1211,7 @@ const HTML = `<style>
           <li><span class="check-icon">✓</span> FAQ schema (AEO)</li>
           <li><span class="check-icon">✓</span> Email support</li>
         </ul>
-        <a href="https://wa.me/916380992671?text=Hi%20TestKaro%2C%20I%20want%20to%20discuss%20the%20Starter%20plan." target="_blank" rel="noreferrer" class="price-btn price-btn-outline" style="margin-top:auto;">Contact us</a>
+        <a href="https://wa.me/916380992671?text=Hi%20Story%20Pulse%2C%20I%20want%20to%20discuss%20the%20Starter%20plan." target="_blank" rel="noreferrer" class="price-btn price-btn-outline" style="margin-top:auto;">Contact us</a>
       </div>
 
       <div class="pricing-card popular" style="display:flex; flex-direction:column; height:100%;">
@@ -1218,7 +1227,7 @@ const HTML = `<style>
           <li><span class="check-icon">✓</span> AEO optimizer</li>
           <li><span class="check-icon">✓</span> Priority support</li>
         </ul>
-        <a href="https://wa.me/916380992671?text=Hi%20TestKaro%2C%20I%20want%20to%20discuss%20the%20Growth%20plan." target="_blank" rel="noreferrer" class="price-btn price-btn-solid" style="margin-top:auto;">Contact us</a>
+        <a href="https://wa.me/916380992671?text=Hi%20Story%20Pulse%2C%20I%20want%20to%20discuss%20the%20Growth%20plan." target="_blank" rel="noreferrer" class="price-btn price-btn-solid" style="margin-top:auto;">Contact us</a>
       </div>
 
       <div class="pricing-card" style="display:flex; flex-direction:column; height:100%;">
@@ -1233,7 +1242,7 @@ const HTML = `<style>
           <li><span class="check-icon">✓</span> Custom integrations</li>
           <li><span class="check-icon">✓</span> Dedicated account manager</li>
         </ul>
-        <a href="https://wa.me/916380992671?text=Hi%20TestKaro%2C%20I%20want%20to%20discuss%20the%20Enterprise%20plan." target="_blank" rel="noreferrer" class="price-btn price-btn-outline" style="margin-top:auto;">Talk to sales</a>
+        <a href="https://wa.me/916380992671?text=Hi%20Story%20Pulse%2C%20I%20want%20to%20discuss%20the%20Enterprise%20plan." target="_blank" rel="noreferrer" class="price-btn price-btn-outline" style="margin-top:auto;">Talk to sales</a>
       </div>
     </div>
   </div>
@@ -1247,11 +1256,11 @@ const HTML = `<style>
   <div class="faq-list">
     <details>
       <summary>Do I need to install anything on my website?</summary>
-      <p class="faq-answer">No. TestKaro is a URL-paste tool. You paste your article URL, get headline suggestions, copy the best one, and paste it into your CMS. No JS snippet, no server-side integration, no IT approval needed. If your editor can use WhatsApp, they can use TestKaro.</p>
+      <p class="faq-answer">No. Story Pulse is a URL-paste tool. You paste your article URL, get headline suggestions, copy the best one, and paste it into your CMS. No JS snippet, no server-side integration, no IT approval needed. If your editor can use WhatsApp, they can use Story Pulse.</p>
     </details>
     <details>
       <summary>How is this different from Chartbeat or Optimizely?</summary>
-      <p class="faq-answer">Chartbeat shows you what's happening (traffic analytics). Optimizely runs A/B tests but requires developer integration and costs $10,000+/year. TestKaro generates AI-optimised headline options in Indian languages and gives you an SEO score — in 30 seconds, for ₹5,000/month. Different purpose, different audience, different price point.</p>
+      <p class="faq-answer">Chartbeat shows you what's happening (traffic analytics). Optimizely runs A/B tests but requires developer integration and costs $10,000+/year. Story Pulse generates AI-optimised headline options in Indian languages and gives you an SEO score — in 30 seconds, for ₹5,000/month. Different purpose, different audience, different price point.</p>
     </details>
     <details>
       <summary>Are the headlines actually in native script — or translated from English?</summary>
@@ -1259,11 +1268,11 @@ const HTML = `<style>
     </details>
     <details>
       <summary>Will this improve my Google Discover traffic?</summary>
-      <p class="faq-answer">TestKaro generates one headline specifically optimised for Google Search and Discover — with the right keyword placement and click-signal framing. When you update your CMS headline, Discover picks it up automatically (Discover reads your CMS title tag). We can't guarantee results, but the headline we suggest follows Google's documented best practices for Discover visibility.</p>
+      <p class="faq-answer">Story Pulse generates one headline specifically optimised for Google Search and Discover — with the right keyword placement and click-signal framing. When you update your CMS headline, Discover picks it up automatically (Discover reads your CMS title tag). We can't guarantee results, but the headline we suggest follows Google's documented best practices for Discover visibility.</p>
     </details>
     <details>
       <summary>What is the AEO / FAQ schema, and do I need it?</summary>
-      <p class="faq-answer">AEO (Answer Engine Optimization) is about making your content appear in AI-generated answers — Google AI Overviews, ChatGPT cited sources, Perplexity results. FAQ schema is structured data that helps AI systems identify your content as an authoritative answer. TestKaro generates this automatically with every headline set. If you're seeing traffic decline from AI search displacing traditional search, AEO is your answer.</p>
+      <p class="faq-answer">AEO (Answer Engine Optimization) is about making your content appear in AI-generated answers — Google AI Overviews, ChatGPT cited sources, Perplexity results. FAQ schema is structured data that helps AI systems identify your content as an authoritative answer. Story Pulse generates this automatically with every headline set. If you're seeing traffic decline from AI search displacing traditional search, AEO is your answer.</p>
     </details>
     <details>
       <summary>What happens after the 14-day free trial?</summary>
@@ -1292,8 +1301,9 @@ const HTML = `<style>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-brand">Test<span>Karo</span></div>
-  <div class="footer-meta">© 2026 TESTKARO · BUILT FOR INDIAN NEWSROOMS · CHENNAI</div>
+  <div class="footer-brand">Story<span> Pulse</span></div>
+  <div class="footer-meta">© 2026 STORY PULSE · BUILT FOR INDIAN NEWSROOMS · CHENNAI</div>
+  <a href="mailto:info@storypulse.co" class="footer-email">info@storypulse.co</a>
 </footer>
 `;
 

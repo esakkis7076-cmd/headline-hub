@@ -7,7 +7,7 @@ export function TKLogo({ className = "" }: { className?: string }) {
         T
       </div>
       <span className="font-display text-xl font-semibold tracking-tight">
-        TestKaro
+        Story Pulse
       </span>
     </Link>
   );

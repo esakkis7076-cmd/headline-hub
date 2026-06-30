@@ -5,13 +5,13 @@ export const Route = createFileRoute("/pricing")({
   component: PricingPage,
   head: () => ({
     meta: [
-      { title: "Pricing — TestKaro" },
+      { title: "Pricing — Story Pulse" },
       {
         name: "description",
         content:
           "Simple monthly plans for Indian newsrooms. Pay via UPI, NEFT/IMPS, Razorpay or Stripe. 14-day free trial.",
       },
-      { property: "og:title", content: "Pricing — TestKaro" },
+      { property: "og:title", content: "Pricing — Story Pulse" },
       {
         property: "og:description",
         content:
@@ -29,7 +29,7 @@ function PricingPage() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border/60">
         <div className="mx-auto max-w-6xl px-6 py-5 flex items-center justify-between">
-          <Link to="/" className="font-serif text-lg font-semibold">TestKaro</Link>
+          <Link to="/" className="font-serif text-lg font-semibold">Story Pulse</Link>
           <nav className="flex items-center gap-4 text-sm">
             <Link to="/" className="text-muted-foreground hover:text-foreground">Home</Link>
             <Link to="/login" className="rounded-lg bg-primary px-3 py-1.5 text-primary-foreground font-semibold hover:bg-primary/90">
@@ -73,7 +73,7 @@ function PricingPage() {
               <li>✓ Email support</li>
             </ul>
             <a
-              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent("Hi TestKaro, I want to discuss the Starter plan.")}`}
+              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent("Hi Story Pulse, I want to discuss the Starter plan.")}`}
               target="_blank"
               rel="noreferrer"
               className="mt-auto inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border/60 px-5 py-2.5 text-sm font-semibold hover:bg-accent"
@@ -96,7 +96,7 @@ function PricingPage() {
               <li>✓ Priority support</li>
             </ul>
             <a
-              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent("Hi TestKaro, I want to discuss the Growth plan.")}`}
+              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent("Hi Story Pulse, I want to discuss the Growth plan.")}`}
               target="_blank"
               rel="noreferrer"
               className="mt-auto inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
@@ -118,7 +118,7 @@ function PricingPage() {
               <li>✓ Dedicated account manager</li>
             </ul>
             <a
-              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent("Hi TestKaro, I want to discuss the Enterprise plan.")}`}
+              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent("Hi Story Pulse, I want to discuss the Enterprise plan.")}`}
               target="_blank"
               rel="noreferrer"
               className="mt-auto inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border/60 px-5 py-2.5 text-sm font-semibold hover:bg-accent"

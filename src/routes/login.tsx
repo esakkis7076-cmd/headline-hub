@@ -4,13 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { TKLogo } from "@/components/marketing/TKLogo";
 import { toast } from "sonner";
+import { LanguageMultiSelect, type LanguageCode } from "@/components/ui/language-multi-select";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({
     meta: [
-      { title: "Sign in — TestKaro" },
-      { name: "description", content: "Sign in to TestKaro to run headline A/B tests and AEO analyses for your newsroom." },
+      { title: "Sign in — Story Pulse" },
+      { name: "description", content: "Sign in to Story Pulse to run headline A/B tests and AEO analyses for your newsroom." },
     ],
   }),
 });
@@ -24,6 +25,7 @@ function LoginPage() {
   const [org, setOrg] = useState("");
   const [phone, setPhone] = useState("");
   const [referral, setReferral] = useState("");
+  const [selectedLanguages, setSelectedLanguages] = useState<LanguageCode[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -42,6 +44,9 @@ function LoginPage() {
       const cleanName = name.trim();
 
       if (mode === "signup") {
+        if (selectedLanguages.length === 0) {
+          throw new Error("Please select at least one language");
+        }
         const { error } = await supabase.auth.signUp({
           email: cleanEmail,
           password,
@@ -52,6 +57,7 @@ function LoginPage() {
               organisation_name: org.trim() || null,
               phone_number: phone.trim() || null,
               referral_source: referral || null,
+              selected_languages: selectedLanguages,
             },
           },
         });
@@ -81,10 +87,10 @@ function LoginPage() {
     setLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: `${window.location.origin}/aeo`,
+        redirect_uri: `${window.location.origin}/select-languages`,
       });
       if (result.error) throw result.error;
-      if (!result.redirected) navigate({ to: "/aeo" });
+      if (!result.redirected) navigate({ to: "/select-languages" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Google sign-in failed");
       setLoading(false);
@@ -164,6 +170,11 @@ function LoginPage() {
                   <option value="Referred">Referred by someone</option>
                   <option value="Other">Other</option>
                 </select>
+                <LanguageMultiSelect
+                  selected={selectedLanguages}
+                  onChange={setSelectedLanguages}
+                  disabled={loading}
+                />
               </>
             )}
             <input
@@ -207,7 +218,7 @@ function LoginPage() {
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            {mode === "signin" ? "New to TestKaro? " : "Already have an account? "}
+            {mode === "signin" ? "New to Story Pulse? " : "Already have an account? "}
             <button
               type="button"
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}

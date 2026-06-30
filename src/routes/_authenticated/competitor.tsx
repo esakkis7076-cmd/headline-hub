@@ -16,7 +16,7 @@ import {
 
 export const Route = createFileRoute("/_authenticated/competitor")({
   component: CompetitorPage,
-  head: () => ({ meta: [{ title: "Competitor headlines — TestKaro" }] }),
+  head: () => ({ meta: [{ title: "Competitor headlines — Story Pulse" }] }),
 });
 
 type Category = "number" | "question" | "how_to" | "curiosity" | "authority" | "emotional" | "other";

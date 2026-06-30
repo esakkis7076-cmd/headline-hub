@@ -74,7 +74,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Headline Suggestion" },
       { name: "description", content: "Test which headline gets the most clicks on your homepage — in Hindi, Tamil, Telugu, Kannada, Bengali, Marathi, Malayalam, Gujarati & English. Find the winner in 2-4 hours." },
-      { name: "author", content: "TestKaro" },
+      { name: "author", content: "Story Pulse" },
       { property: "og:title", content: "Headline Suggestion" },
       { property: "og:description", content: "Test which headline gets the most clicks on your homepage — in Hindi, Tamil, Telugu, Kannada, Bengali, Marathi, Malayalam, Gujarati & English. Find the winner in 2-4 hours." },
       { property: "og:type", content: "website" },

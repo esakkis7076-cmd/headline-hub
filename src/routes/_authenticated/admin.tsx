@@ -13,7 +13,7 @@ import {
 
 export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
-  head: () => ({ meta: [{ title: "Admin — TestKaro" }] }),
+  head: () => ({ meta: [{ title: "Admin — Story Pulse" }] }),
 });
 
 const PLAN_TIERS = ["free", "trial", "starter", "growth", "enterprise"] as const;

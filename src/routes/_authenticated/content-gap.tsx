@@ -15,7 +15,7 @@ import {
 
 export const Route = createFileRoute("/_authenticated/content-gap")({
   component: ContentGapPage,
-  head: () => ({ meta: [{ title: "Content Gap Analysis — TestKaro" }] }),
+  head: () => ({ meta: [{ title: "Content Gap Analysis — Story Pulse" }] }),
 });
 
 type TopicEntry = { topic: string; count: number };

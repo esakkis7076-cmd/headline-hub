@@ -13,7 +13,7 @@ import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
-  head: () => ({ meta: [{ title: "Settings — TestKaro" }] }),
+  head: () => ({ meta: [{ title: "Settings — Story Pulse" }] }),
 });
 
 function SettingsPage() {

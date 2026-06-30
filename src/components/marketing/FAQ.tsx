@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const FAQS = [
   {
-    q: "Where exactly does TestKaro test headlines?",
+    q: "Where exactly does Story Pulse test headlines?",
     a: "On your homepage, your section pages, and inside 'Read More' / related-article modules — anywhere there's a link pointing to an article. That's where the click decision happens. We do NOT modify the article page itself.",
   },
   {
@@ -11,15 +11,15 @@ const FAQS = [
   },
   {
     q: "Does it create multiple H1 tags?",
-    a: "No. The H1 on the article page is whatever your CMS published. TestKaro only edits link text on pages that link to that article.",
+    a: "No. The H1 on the article page is whatever your CMS published. Story Pulse only edits link text on pages that link to that article.",
   },
   {
     q: "How is this different from Chartbeat?",
-    a: "Chartbeat is excellent at attention and reading depth analytics. TestKaro is a focused headline A/B + AEO tool for Indian-language publishers, with native script rendering, section-level style insights, and Quality Clicks built in. They complement each other.",
+    a: "Chartbeat is excellent at attention and reading depth analytics. Story Pulse is a focused headline A/B + AEO tool for Indian-language publishers, with native script rendering, section-level style insights, and Quality Clicks built in. They complement each other.",
   },
   {
     q: "What about AMP pages?",
-    a: "TestKaro doesn't run on AMP — we're honest about that. The benefit reaches AMP after the editor pushes the winning headline to the CMS, since AMP rebuilds from your source.",
+    a: "Story Pulse doesn't run on AMP — we're honest about that. The benefit reaches AMP after the editor pushes the winning headline to the CMS, since AMP rebuilds from your source.",
   },
   {
     q: "Will readers notice the headline changing?",

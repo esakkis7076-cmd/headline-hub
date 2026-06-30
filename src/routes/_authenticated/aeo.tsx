@@ -1,14 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { analyzeArticle, listAnalyses } from "@/lib/aeo.functions";
+import { getMyWorkspace } from "@/lib/workspace.functions";
 import { Sparkles, Copy, Check, RefreshCw, ChevronDown } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/aeo")({
   component: AeoPage,
-  head: () => ({ meta: [{ title: "AEO analyzer — TestKaro" }] }),
+  head: () => ({ meta: [{ title: "AEO analyzer — Story Pulse" }] }),
 });
 
 type Lang = "hi" | "bn" | "ta" | "te" | "mr" | "gu" | "kn" | "ml" | "pa" | "en";
@@ -22,6 +23,7 @@ function parseLimit(msg: string): { kind: string; text: string } | null {
 function AeoPage() {
   const analyze = useServerFn(analyzeArticle);
   const list = useServerFn(listAnalyses);
+  const getWs = useServerFn(getMyWorkspace);
   const qc = useQueryClient();
   const [url, setUrl] = useState("");
   const [lang, setLang] = useState<Lang>("hi");
@@ -31,6 +33,24 @@ function AeoPage() {
   const [limit, setLimit] = useState<{ kind: string; text: string } | null>(null);
 
   const history = useQuery({ queryKey: ["aeo"], queryFn: () => list() });
+  const workspace = useQuery({ queryKey: ["workspace"], queryFn: () => getWs() });
+
+  // Filter languages based on user's selection
+  const availableLanguages = useMemo(() => {
+    const selectedLangs = workspace.data?.profile?.selected_languages;
+    if (!selectedLangs || selectedLangs.length === 0) {
+      // Fallback: show all languages for existing users
+      return ["hi", "bn", "ta", "te", "mr", "gu", "kn", "ml", "pa", "en"] as Lang[];
+    }
+    return selectedLangs as Lang[];
+  }, [workspace.data?.profile?.selected_languages]);
+
+  // Set default language to first available if current is not in available
+  useMemo(() => {
+    if (availableLanguages.length > 0 && !availableLanguages.includes(lang)) {
+      setLang(availableLanguages[0]);
+    }
+  }, [availableLanguages, lang]);
 
   const mut = useMutation({
     mutationFn: (data: { article_url: string; language: Lang }) => analyze({ data }),
@@ -68,16 +88,11 @@ function AeoPage() {
       >
         <input required type="url" placeholder="https://yourpub.in/article" value={url} onChange={(e) => setUrl(e.target.value)} className="flex-1 rounded-lg border border-border bg-background px-3 py-2.5 text-sm" />
         <select value={lang} onChange={(e) => setLang(e.target.value as Lang)} className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm">
-          <option value="hi">Hindi</option>
-          <option value="bn">Bengali</option>
-          <option value="ta">Tamil</option>
-          <option value="te">Telugu</option>
-          <option value="mr">Marathi</option>
-          <option value="gu">Gujarati</option>
-          <option value="kn">Kannada</option>
-          <option value="ml">Malayalam</option>
-          <option value="pa">Punjabi</option>
-          <option value="en">English</option>
+          {availableLanguages.map((l) => (
+            <option key={l} value={l}>
+              {l === "hi" ? "Hindi" : l === "bn" ? "Bengali" : l === "ta" ? "Tamil" : l === "te" ? "Telugu" : l === "mr" ? "Marathi" : l === "gu" ? "Gujarati" : l === "kn" ? "Kannada" : l === "ml" ? "Malayalam" : l === "pa" ? "Punjabi" : "English"}
+            </option>
+          ))}
         </select>
         <button type="submit" disabled={mut.isPending} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
           <Sparkles size={14} />
