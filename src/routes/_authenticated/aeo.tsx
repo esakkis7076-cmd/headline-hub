@@ -14,6 +14,14 @@ export const Route = createFileRoute("/_authenticated/aeo")({
 
 type Lang = "hi" | "bn" | "ta" | "te" | "mr" | "gu" | "kn" | "ml" | "pa" | "en";
 
+const ADMIN_WHATSAPP_NUMBER = import.meta.env.VITE_ADMIN_WHATSAPP_NUMBER ?? "916380992671";
+const TRIAL_ENDED_MESSAGE = "Your free trial has ended. Please contact admin to activate your plan.";
+
+function getAdminWhatsappUrl() {
+  const whatsappText = encodeURIComponent("Hi admin, my free trial has ended. Please activate my Story Pulse plan.");
+  return `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${whatsappText}`;
+}
+
 function parseLimit(msg: string): { kind: string; text: string } | null {
   if (!msg.startsWith("LIMIT:")) return null;
   const [, kind, ...rest] = msg.split(":");
@@ -75,7 +83,15 @@ function AeoPage() {
   };
 
   const latest = mut.data?.analysis ?? history.data?.analyses[0];
+  const profile = workspace.data?.profile;
+  const trialExpired =
+    profile?.plan_tier === "trial" &&
+    profile.trial_end_date &&
+    new Date(profile.trial_end_date) < new Date();
 
+  if (trialExpired) {
+    return <TrialExpiredState />;
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
@@ -198,7 +214,16 @@ function AeoPage() {
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">{limit.text}</p>
             <div className="mt-5 flex gap-2">
-              {limit.kind !== "BLOCKED" && (
+              {limit.kind === "TRIAL" ? (
+                <a
+                  href={getAdminWhatsappUrl()}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex-1 text-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  Contact Admin on WhatsApp
+                </a>
+              ) : limit.kind !== "BLOCKED" && (
                 <Link
                   to="/pricing"
                   onClick={() => setLimit(null)}
@@ -357,6 +382,26 @@ function HeadlineCard({ label, tint, text }: { label: string; tint: string; text
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+function TrialExpiredState() {
+  const whatsappUrl = getAdminWhatsappUrl();
+
+  return (
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-6 py-12">
+      <div className="w-full max-w-md rounded-2xl border border-border/60 bg-card/40 p-8 text-center shadow-2xl">
+        <h1 className="text-xl font-semibold">{TRIAL_ENDED_MESSAGE}</h1>
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-6 inline-flex w-full items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition"
+        >
+          Contact Admin on WhatsApp
+        </a>
+      </div>
     </div>
   );
 }

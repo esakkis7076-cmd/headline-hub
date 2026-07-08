@@ -10,7 +10,7 @@ export const getMyWorkspace = createServerFn({ method: "GET" })
     const { supabase, userId } = context;
     const claims = context.claims as {
       email?: string;
-      user_metadata?: { full_name?: string; name?: string };
+      user_metadata?: { full_name?: string; name?: string; selected_languages?: unknown };
     };
 
     let { data: profile } = await supabase
@@ -20,6 +20,13 @@ export const getMyWorkspace = createServerFn({ method: "GET" })
       .maybeSingle();
 
     if (!profile) {
+      const trialStart = new Date();
+      const trialEnd = new Date(trialStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+      const selectedLanguages = Array.isArray(claims.user_metadata?.selected_languages)
+        ? claims.user_metadata.selected_languages
+        : null;
+
       const { data: ownedPublication } = await supabase
         .from("publications")
         .select("*")
@@ -36,6 +43,10 @@ export const getMyWorkspace = createServerFn({ method: "GET" })
             email: claims.email ?? null,
             display_name: claims.user_metadata?.full_name ?? claims.user_metadata?.name ?? null,
             publication_id: ownedPublication?.id ?? null,
+            plan_tier: "trial",
+            trial_start_date: trialStart.toISOString(),
+            trial_end_date: trialEnd.toISOString(),
+            selected_languages: selectedLanguages as never,
           },
           { onConflict: "user_id" },
         )
@@ -73,7 +84,7 @@ export const createPublication = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const claims = context.claims as {
       email?: string;
-      user_metadata?: { full_name?: string; name?: string };
+      user_metadata?: { full_name?: string; name?: string; selected_languages?: unknown };
     };
 
     const { data: pub, error } = await supabase

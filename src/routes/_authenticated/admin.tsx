@@ -19,6 +19,18 @@ export const Route = createFileRoute("/_authenticated/admin")({
 const PLAN_TIERS = ["free", "trial", "starter", "growth", "enterprise"] as const;
 const PAYMENT_STATUSES = ["pending", "paid", "overdue", "cancelled"] as const;
 
+function toDateTimeInput(value: string | null) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const offsetMs = date.getTimezoneOffset() * 60 * 1000;
+  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
+}
+
+function fromDateTimeInput(value: string) {
+  return value ? new Date(value).toISOString() : undefined;
+}
+
 const planBadge: Record<string, string> = {
   free: "bg-muted text-muted-foreground",
   trial: "bg-amber-500/20 text-amber-400",
@@ -83,7 +95,10 @@ function AdminPage() {
               <th className="text-left px-3 py-2">Phone</th>
               <th className="text-left px-3 py-2">Lang</th>
               <th className="text-left px-3 py-2">Plan</th>
+              <th className="text-left px-3 py-2">Trial start</th>
               <th className="text-left px-3 py-2">Trial end</th>
+              <th className="text-left px-3 py-2">Plan start</th>
+              <th className="text-left px-3 py-2">Plan end</th>
               <th className="text-right px-3 py-2">Mo</th>
               <th className="text-right px-3 py-2">All</th>
               <th className="text-left px-3 py-2">Last active</th>
@@ -96,7 +111,7 @@ function AdminPage() {
           </thead>
           <tbody>
             {usersQ.isPending && (
-              <tr><td colSpan={14} className="px-3 py-6 text-center text-muted-foreground">Loading…</td></tr>
+              <tr><td colSpan={17} className="px-3 py-6 text-center text-muted-foreground">Loading�</td></tr>
             )}
             {usersQ.data?.users.map((u) => (
               <UserRow key={u.user_id} user={u} />
@@ -119,6 +134,26 @@ function MetricCard({ label, value }: { label: string; value: number | undefined
   );
 }
 
+function DateField({ value, onSave }: { value: string | null; onSave: (value: string) => void }) {
+  const [draft, setDraft] = useState(toDateTimeInput(value));
+
+  useEffect(() => {
+    setDraft(toDateTimeInput(value));
+  }, [value]);
+
+  return (
+    <input
+      type="datetime-local"
+      value={draft}
+      onChange={(e) => setDraft(e.target.value)}
+      onBlur={() => {
+        const next = fromDateTimeInput(draft);
+        if (next && next !== value) onSave(next);
+      }}
+      className="w-36 rounded-md bg-background border border-border px-1.5 py-0.5 text-[11px]"
+    />
+  );
+}
 function UserRow({ user }: { user: AdminUserRow }) {
   const qc = useQueryClient();
   const updateFn = useServerFn(adminUpdateUser);
@@ -141,10 +176,6 @@ function UserRow({ user }: { user: AdminUserRow }) {
   useEffect(() => { setUtr(user.utr_reference ?? ""); }, [user.utr_reference]);
   useEffect(() => { setMethod(user.payment_method ?? ""); }, [user.payment_method]);
 
-  const trial = useMemo(
-    () => (user.trial_end_date ? new Date(user.trial_end_date).toLocaleDateString() : "—"),
-    [user.trial_end_date],
-  );
   const lastActive = useMemo(
     () => (user.last_active_date ? new Date(user.last_active_date).toLocaleDateString() : "—"),
     [user.last_active_date],
@@ -165,7 +196,10 @@ function UserRow({ user }: { user: AdminUserRow }) {
           {PLAN_TIERS.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
       </td>
-      <td className="px-3 py-2 whitespace-nowrap">{trial}</td>
+      <td className="px-3 py-2"><DateField value={user.trial_start_date} onSave={(value) => mut.mutate({ trial_start_date: value })} /></td>
+      <td className="px-3 py-2"><DateField value={user.trial_end_date} onSave={(value) => mut.mutate({ trial_end_date: value })} /></td>
+      <td className="px-3 py-2"><DateField value={user.plan_start_date} onSave={(value) => mut.mutate({ plan_start_date: value })} /></td>
+      <td className="px-3 py-2"><DateField value={user.plan_end_date} onSave={(value) => mut.mutate({ plan_end_date: value })} /></td>
       <td className="px-3 py-2 text-right tabular-nums">{user.api_calls_this_month}</td>
       <td className="px-3 py-2 text-right tabular-nums">{user.api_calls_all_time}</td>
       <td className="px-3 py-2 whitespace-nowrap">{lastActive}</td>

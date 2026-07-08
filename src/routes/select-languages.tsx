@@ -34,11 +34,21 @@ function SelectLanguagesPage() {
         throw new Error("Not authenticated");
       }
 
-      // Update profile with selected languages
       const { error } = await supabase
         .from("profiles")
-        .update({ selected_languages: selectedLanguages })
-        .eq("user_id", user.id);
+        .upsert(
+          {
+            user_id: user.id,
+            email: user.email ?? null,
+            display_name:
+              user.user_metadata?.full_name ??
+              user.user_metadata?.name ??
+              user.email?.split("@")[0] ??
+              null,
+            selected_languages: selectedLanguages,
+          },
+          { onConflict: "user_id" },
+        );
 
       if (error) throw error;
 

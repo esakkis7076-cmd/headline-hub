@@ -12,6 +12,8 @@ export type AdminUserRow = {
   plan_tier: "free" | "trial" | "starter" | "growth" | "enterprise";
   trial_start_date: string | null;
   trial_end_date: string | null;
+  plan_start_date: string | null;
+  plan_end_date: string | null;
   payment_status: "pending" | "paid" | "overdue" | "cancelled";
   payment_method: string | null;
   utr_reference: string | null;
@@ -70,7 +72,10 @@ const UpdateSchema = z.object({
   utr_reference: z.string().max(120).nullable().optional(),
   admin_notes: z.string().max(2000).nullable().optional(),
   account_blocked: z.boolean().optional(),
+  trial_start_date: z.string().optional(),
   trial_end_date: z.string().optional(),
+  plan_start_date: z.string().optional(),
+  plan_end_date: z.string().optional(),
 });
 
 export const adminUpdateUser = createServerFn({ method: "POST" })
@@ -86,7 +91,10 @@ export const adminUpdateUser = createServerFn({ method: "POST" })
       _utr_reference: data.utr_reference ?? null,
       _admin_notes: data.admin_notes ?? null,
       _account_blocked: data.account_blocked ?? null,
+      _trial_start_date: data.trial_start_date ?? null,
       _trial_end_date: data.trial_end_date ?? null,
+      _plan_start_date: data.plan_start_date ?? null,
+      _plan_end_date: data.plan_end_date ?? null,
     });
     if (error) throw new Error(error.message);
     return { user: row as AdminUserRow };

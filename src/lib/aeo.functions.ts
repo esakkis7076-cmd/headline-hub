@@ -102,7 +102,7 @@ export const analyzeArticle = createServerFn({ method: "POST" })
       throw new Error("LIMIT:FREE:You've used your 3 free headline sets. Upgrade to keep going.");
     }
     if (tier === "trial" && profile.trial_end_date && new Date(profile.trial_end_date) < new Date()) {
-      throw new Error("LIMIT:TRIAL:Your trial has ended. Choose a plan to continue.");
+      throw new Error("LIMIT:TRIAL:Your free trial has ended. Please contact admin to activate your plan.");
     }
     if (tier === "starter" && (profile.api_calls_this_month ?? 0) >= 50) {
       throw new Error("LIMIT:STARTER:You've used all 50 headline sets this month. Upgrade to Growth for 200/month.");
