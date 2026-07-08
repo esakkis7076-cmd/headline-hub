@@ -88,7 +88,7 @@ export const analyzeArticle = createServerFn({ method: "POST" })
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("publication_id, plan_tier, trial_end_date, account_blocked, api_calls_this_month, api_calls_all_time")
+      .select("publication_id, plan_tier, trial_end_date, plan_end_date, account_blocked, api_calls_this_month, api_calls_all_time, selected_languages")
       .eq("user_id", userId)
       .maybeSingle();
     if (!profile?.publication_id) throw new Error("Create a publication first");
@@ -103,6 +103,13 @@ export const analyzeArticle = createServerFn({ method: "POST" })
     }
     if (tier === "trial" && profile.trial_end_date && new Date(profile.trial_end_date) < new Date()) {
       throw new Error("LIMIT:TRIAL:Your free trial has ended. Please contact admin to activate your plan.");
+    }
+    if (["starter", "growth", "enterprise"].includes(tier) && profile.plan_end_date && new Date(profile.plan_end_date) < new Date()) {
+      throw new Error(`LIMIT:${tier.toUpperCase()}:Your ${tier} plan has ended. Please contact admin to activate your plan.`);
+    }
+    const selectedLanguages = profile.selected_languages as Lang[] | null;
+    if (selectedLanguages?.length && !selectedLanguages.includes(data.language)) {
+      throw new Error("Selected language is not enabled for your account. Please contact admin.");
     }
     if (tier === "starter" && (profile.api_calls_this_month ?? 0) >= 50) {
       throw new Error("LIMIT:STARTER:You've used all 50 headline sets this month. Upgrade to Growth for 200/month.");

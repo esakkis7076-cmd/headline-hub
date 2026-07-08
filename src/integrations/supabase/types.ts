@@ -310,6 +310,8 @@ export type Database = {
           payment_status: string
           phone_number: string | null
           plan_tier: string
+          plan_start_date: string | null
+          plan_end_date: string | null
           preferred_language: Database["public"]["Enums"]["indic_language"]
           publication_id: string | null
           referral_source: string | null
@@ -338,6 +340,8 @@ export type Database = {
           payment_status?: string
           phone_number?: string | null
           plan_tier?: string
+          plan_start_date?: string | null
+          plan_end_date?: string | null
           preferred_language?: Database["public"]["Enums"]["indic_language"]
           publication_id?: string | null
           referral_source?: string | null
@@ -366,6 +370,8 @@ export type Database = {
           payment_status?: string
           phone_number?: string | null
           plan_tier?: string
+          plan_start_date?: string | null
+          plan_end_date?: string | null
           preferred_language?: Database["public"]["Enums"]["indic_language"]
           publication_id?: string | null
           referral_source?: string | null
@@ -492,8 +498,11 @@ export type Database = {
           payment_method: string
           payment_status: string
           phone_number: string
-          plan_tier: string
           preferred_language: string
+          selected_languages: string[] | null
+          plan_tier: string
+          plan_start_date: string | null
+          plan_end_date: string | null
           referral_source: string
           trial_end_date: string
           trial_start_date: string
@@ -509,7 +518,11 @@ export type Database = {
           _payment_method?: string
           _payment_status?: string
           _plan_tier?: string
+          _selected_languages?: string[]
+          _trial_start_date?: string
           _trial_end_date?: string
+          _plan_start_date?: string
+          _plan_end_date?: string
           _user_id: string
           _utr_reference?: string
         }
@@ -531,6 +544,8 @@ export type Database = {
           payment_status: string
           phone_number: string | null
           plan_tier: string
+          plan_start_date: string | null
+          plan_end_date: string | null
           preferred_language: Database["public"]["Enums"]["indic_language"]
           publication_id: string | null
           referral_source: string | null
@@ -575,6 +590,8 @@ export type Database = {
           payment_status: string
           phone_number: string | null
           plan_tier: string
+          plan_start_date: string | null
+          plan_end_date: string | null
           preferred_language: Database["public"]["Enums"]["indic_language"]
           publication_id: string | null
           referral_source: string | null

@@ -9,6 +9,7 @@ export type AdminUserRow = {
   organisation_name: string | null;
   phone_number: string | null;
   preferred_language: string;
+  selected_languages: string[] | null;
   plan_tier: "free" | "trial" | "starter" | "growth" | "enterprise";
   trial_start_date: string | null;
   trial_end_date: string | null;
@@ -72,6 +73,7 @@ const UpdateSchema = z.object({
   utr_reference: z.string().max(120).nullable().optional(),
   admin_notes: z.string().max(2000).nullable().optional(),
   account_blocked: z.boolean().optional(),
+  selected_languages: z.array(z.enum(["hi", "bn", "ta", "te", "mr", "gu", "kn", "ml", "pa", "en"])).min(1).max(10).optional(),
   trial_start_date: z.string().optional(),
   trial_end_date: z.string().optional(),
   plan_start_date: z.string().optional(),
@@ -91,6 +93,7 @@ export const adminUpdateUser = createServerFn({ method: "POST" })
       _utr_reference: data.utr_reference ?? null,
       _admin_notes: data.admin_notes ?? null,
       _account_blocked: data.account_blocked ?? null,
+      _selected_languages: data.selected_languages ?? null,
       _trial_start_date: data.trial_start_date ?? null,
       _trial_end_date: data.trial_end_date ?? null,
       _plan_start_date: data.plan_start_date ?? null,

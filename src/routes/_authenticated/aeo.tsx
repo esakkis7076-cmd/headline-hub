@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import { analyzeArticle, listAnalyses } from "@/lib/aeo.functions";
 import { getMyWorkspace } from "@/lib/workspace.functions";
@@ -17,8 +17,17 @@ type Lang = "hi" | "bn" | "ta" | "te" | "mr" | "gu" | "kn" | "ml" | "pa" | "en";
 const ADMIN_WHATSAPP_NUMBER = import.meta.env.VITE_ADMIN_WHATSAPP_NUMBER ?? "916380992671";
 const TRIAL_ENDED_MESSAGE = "Your free trial has ended. Please contact admin to activate your plan.";
 
-function getAdminWhatsappUrl() {
-  const whatsappText = encodeURIComponent("Hi admin, my free trial has ended. Please activate my Story Pulse plan.");
+type PlanTier = "free" | "trial" | "starter" | "growth" | "enterprise";
+
+function getPlanEndedMessage(plan: PlanTier | string | null | undefined) {
+  if (plan === "starter" || plan === "growth" || plan === "enterprise") {
+    return `Your ${plan} plan has ended. Please contact admin to activate your plan.`;
+  }
+  return TRIAL_ENDED_MESSAGE;
+}
+
+function getAdminWhatsappUrl(message = TRIAL_ENDED_MESSAGE) {
+  const whatsappText = encodeURIComponent(`Hi admin, ${message} Please activate my Story Pulse plan.`);
   return `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${whatsappText}`;
 }
 
@@ -54,7 +63,7 @@ function AeoPage() {
   }, [workspace.data?.profile?.selected_languages]);
 
   // Set default language to first available if current is not in available
-  useMemo(() => {
+  useEffect(() => {
     if (availableLanguages.length > 0 && !availableLanguages.includes(lang)) {
       setLang(availableLanguages[0]);
     }
@@ -84,13 +93,16 @@ function AeoPage() {
 
   const latest = mut.data?.analysis ?? history.data?.analyses[0];
   const profile = workspace.data?.profile;
-  const trialExpired =
-    profile?.plan_tier === "trial" &&
-    profile.trial_end_date &&
-    new Date(profile.trial_end_date) < new Date();
+  const expiredMessage = profile?.plan_tier === "trial" && profile.trial_end_date && new Date(profile.trial_end_date) < new Date()
+    ? getPlanEndedMessage("trial")
+    : (profile?.plan_tier === "starter" || profile?.plan_tier === "growth" || profile?.plan_tier === "enterprise") &&
+      profile.plan_end_date &&
+      new Date(profile.plan_end_date) < new Date()
+      ? getPlanEndedMessage(profile.plan_tier)
+      : null;
 
-  if (trialExpired) {
-    return <TrialExpiredState />;
+  if (expiredMessage) {
+    return <PlanExpiredState message={expiredMessage} />;
   }
 
   return (
@@ -214,9 +226,9 @@ function AeoPage() {
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">{limit.text}</p>
             <div className="mt-5 flex gap-2">
-              {limit.kind === "TRIAL" ? (
+              {limit.kind === "TRIAL" || limit.kind === "STARTER" || limit.kind === "GROWTH" || limit.kind === "ENTERPRISE" ? (
                 <a
-                  href={getAdminWhatsappUrl()}
+                  href={getAdminWhatsappUrl(limit.text)}
                   target="_blank"
                   rel="noreferrer"
                   className="flex-1 text-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
@@ -386,13 +398,13 @@ function HeadlineCard({ label, tint, text }: { label: string; tint: string; text
   );
 }
 
-function TrialExpiredState() {
-  const whatsappUrl = getAdminWhatsappUrl();
+function PlanExpiredState({ message }: { message: string }) {
+  const whatsappUrl = getAdminWhatsappUrl(message);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-md rounded-2xl border border-border/60 bg-card/40 p-8 text-center shadow-2xl">
-        <h1 className="text-xl font-semibold">{TRIAL_ENDED_MESSAGE}</h1>
+        <h1 className="text-xl font-semibold">{message}</h1>
         <a
           href={whatsappUrl}
           target="_blank"

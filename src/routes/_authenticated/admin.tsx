@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { LANGUAGES, type LanguageCode } from "@/components/ui/language-multi-select";
 import {
   checkIsAdmin,
   adminListUsers,
@@ -93,7 +94,7 @@ function AdminPage() {
               <th className="text-left px-3 py-2">Email</th>
               <th className="text-left px-3 py-2">Org</th>
               <th className="text-left px-3 py-2">Phone</th>
-              <th className="text-left px-3 py-2">Lang</th>
+              <th className="text-left px-3 py-2 min-w-64">Lang</th>
               <th className="text-left px-3 py-2">Plan</th>
               <th className="text-left px-3 py-2">Trial start</th>
               <th className="text-left px-3 py-2">Trial end</th>
@@ -154,6 +155,74 @@ function DateField({ value, onSave }: { value: string | null; onSave: (value: st
     />
   );
 }
+
+function LanguageEditor({
+  user,
+  onSave,
+}: {
+  user: AdminUserRow;
+  onSave: (selected: LanguageCode[]) => void;
+}) {
+  const selected = ((user.selected_languages && user.selected_languages.length > 0)
+    ? user.selected_languages
+    : [user.preferred_language]) as LanguageCode[];
+  const selectedSet = new Set(selected);
+  const availableToAdd = LANGUAGES.filter((lang) => !selectedSet.has(lang.code));
+
+  const addLanguage = (code: LanguageCode) => {
+    if (selectedSet.has(code)) return;
+    onSave([...selected, code]);
+  };
+
+  const removeLanguage = (code: LanguageCode) => {
+    if (selected.length <= 1) {
+      toast.error("At least one language is required");
+      return;
+    }
+    onSave(selected.filter((lang) => lang !== code));
+  };
+
+  return (
+    <div className="min-w-60 space-y-2">
+      <div className="flex flex-wrap gap-1.5">
+        {selected.map((code) => {
+          const lang = LANGUAGES.find((item) => item.code === code);
+          return (
+            <span
+              key={code}
+              className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium uppercase"
+            >
+              {lang?.code ?? code}
+              <button
+                type="button"
+                onClick={() => removeLanguage(code)}
+                className="text-muted-foreground hover:text-foreground"
+                title={`Remove ${lang?.name ?? code}`}
+              >
+                x
+              </button>
+            </span>
+          );
+        })}
+      </div>
+      <select
+        value=""
+        onChange={(e) => {
+          const value = e.target.value as LanguageCode;
+          if (value) addLanguage(value);
+        }}
+        disabled={availableToAdd.length === 0}
+        className="w-full rounded-md bg-background border border-border px-1.5 py-0.5 text-[11px]"
+      >
+        <option value="">Add language</option>
+        {availableToAdd.map((lang) => (
+          <option key={lang.code} value={lang.code}>{lang.name}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 function UserRow({ user }: { user: AdminUserRow }) {
   const qc = useQueryClient();
   const updateFn = useServerFn(adminUpdateUser);
@@ -186,7 +255,7 @@ function UserRow({ user }: { user: AdminUserRow }) {
       <td className="px-3 py-2 max-w-[180px] truncate">{user.email}</td>
       <td className="px-3 py-2 max-w-[160px] truncate">{user.organisation_name ?? "—"}</td>
       <td className="px-3 py-2">{user.phone_number ?? "—"}</td>
-      <td className="px-3 py-2 uppercase">{user.preferred_language}</td>
+      <td className="px-3 py-2"><LanguageEditor user={user} onSave={(selected_languages) => mut.mutate({ selected_languages })} /></td>
       <td className="px-3 py-2">
         <select
           value={user.plan_tier}
