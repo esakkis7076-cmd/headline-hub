@@ -128,6 +128,19 @@ function AeoPage() {
         </button>
       </form>
 
+      
+      {mut.isPending && (
+        <div className="mt-3 rounded-lg border border-border/60 bg-card/40 px-4 py-3 text-sm text-muted-foreground">
+          Analyzing article... this can take up to 30 seconds.
+        </div>
+      )}
+
+      {mut.isError && !limit && (
+        <div role="alert" className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {mut.error instanceof Error ? mut.error.message : "Analysis failed. Please try again."}
+        </div>
+      )}
+
       {latest && (
         <div className="mt-8 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

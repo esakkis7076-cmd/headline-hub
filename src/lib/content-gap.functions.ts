@@ -8,6 +8,33 @@ const TOTAL_TIME_MS = 22000;
 const MAX_URLS_PER_DOMAIN = 250;
 const MAX_SITEMAP_CHILDREN = 3;
 
+function extractJsonObject(text: string): unknown {
+  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```$/i, "").trim();
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) throw new Error("Gemini returned invalid JSON");
+  return JSON.parse(cleaned.slice(start, end + 1));
+}
+
+async function generateGeminiJson(apiKey: string, prompt: string): Promise<unknown> {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    }),
+    signal: AbortSignal.timeout(30000),
+  });
+  if (!res.ok) {
+    const details = await res.text().catch(() => "");
+    throw new Error(`Gemini API error ${res.status}${details ? `: ${details.slice(0, 300)}` : ""}`);
+  }
+  const json = await res.json();
+  const content = json?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text ?? "").join("") ?? "";
+  if (!content) throw new Error("Gemini returned an empty response");
+  return extractJsonObject(content);
+}
+
 // ───────────────────────────── shared helpers ─────────────────────────────
 
 function normalizeDomain(input: string): { origin: string; host: string } {
@@ -165,7 +192,7 @@ function extractTopics(urls: string[], topN = 60): TopicEntry[] {
     .map(([topic, count]) => ({ topic, count }));
 }
 
-// ───────────────────────────── recommendation via Lovable AI ─────────────────────────────
+// ───────────────────────────── recommendation via Gemini AI ─────────────────────────────
 
 async function generateRecommendations(args: {
   userDomain: string;
@@ -173,7 +200,7 @@ async function generateRecommendations(args: {
   missing: TopicEntry[];
   underCovered: { topic: string; user_count: number; competitor_count: number }[];
 }): Promise<{ recommendations: Recommendation[]; summary: string }> {
-  const apiKey = process.env.LOVABLE_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return {
       summary: `${args.competitorDomain} covers ${args.missing.length} topic clusters that ${args.userDomain} is not publishing on. Focus on the highest-frequency missing topics first.`,
@@ -211,23 +238,10 @@ For the top 10 most strategic topics from the above, return JSON only matching t
 Respond with ONLY the JSON object. No markdown, no prose.`;
 
   try {
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [{ role: "user", content: prompt }],
-        response_format: { type: "json_object" },
-      }),
-      signal: AbortSignal.timeout(20000),
-    });
-    if (!res.ok) throw new Error(`AI ${res.status}`);
-    const json = await res.json();
-    const content = json.choices?.[0]?.message?.content ?? "{}";
-    const parsed = JSON.parse(content);
+    const parsed = await generateGeminiJson(apiKey, `${prompt}\n\nReturn ONLY a valid JSON object. Do not include markdown.`) as { summary?: unknown; recommendations?: unknown };
     return {
       summary: String(parsed.summary ?? ""),
-      recommendations: Array.isArray(parsed.recommendations) ? parsed.recommendations.slice(0, 12) : [],
+      recommendations: Array.isArray(parsed.recommendations) ? parsed.recommendations.slice(0, 12) as Recommendation[] : [],
     };
   } catch (e) {
     return {

@@ -1,7 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { generateObject } from "ai";
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const LANGS = ["hi", "bn", "ta", "te", "mr", "gu", "kn", "ml", "pa", "en"] as const;
@@ -21,7 +19,7 @@ const LANG_NAMES: Record<Lang, string> = {
 };
 
 const AeoSchema = z.object({
-  overall_score: z.number().int().min(0).max(100),
+  overall_score: z.coerce.number().int().min(0).max(100),
   position_zero_summary: z.string(),
   faqs: z.array(z.object({ question: z.string(), answer: z.string() })).min(3).max(4),
   headlines: z.object({
@@ -29,11 +27,37 @@ const AeoSchema = z.object({
     seo: z.string(),
     social: z.string(),
   }),
-  discover_ready: z.boolean(),
-  discover_checks: z.array(
-    z.object({ label: z.string(), pass: z.boolean(), note: z.string().optional() }),
+  discover_ready: z.coerce.boolean(),
+  discover_checks: z.preprocess(
+    (value) => Array.isArray(value)
+      ? value.map((item, index) => {
+          if (typeof item === "string") return { label: item, pass: false };
+          if (!item || typeof item !== "object") return { label: `Check ${index + 1}`, pass: false };
+          const row = item as Record<string, unknown>;
+          return {
+            label: String(row.label ?? row.check ?? row.name ?? row.title ?? row.item ?? `Check ${index + 1}`),
+            pass: typeof row.pass === "boolean"
+              ? row.pass
+              : typeof row.passed === "boolean"
+                ? row.passed
+                : String(row.status ?? row.result ?? "").toLowerCase().includes("pass"),
+            note: row.note ?? row.reason ?? row.recommendation ?? row.description ? String(row.note ?? row.reason ?? row.recommendation ?? row.description) : undefined,
+          };
+        })
+      : value,
+    z.array(z.object({ label: z.string(), pass: z.boolean(), note: z.string().optional() })),
   ),
-  recommendations: z.array(z.string()).min(3).max(8),
+  recommendations: z.preprocess(
+    (value) => Array.isArray(value)
+      ? value.map((item) => {
+          if (typeof item === "string") return item;
+          if (!item || typeof item !== "object") return String(item ?? "");
+          const row = item as Record<string, unknown>;
+          return String(row.recommendation ?? row.action ?? row.title ?? row.text ?? row.rationale ?? JSON.stringify(row));
+        })
+      : value,
+    z.array(z.string()).min(3).max(8),
+  ),
 });
 
 function buildFaqSchema(
@@ -52,6 +76,32 @@ function buildFaqSchema(
   };
 }
 
+function extractJsonObject(text: string): unknown {
+  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```$/i, "").trim();
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) throw new Error("Gemini returned invalid JSON");
+  return JSON.parse(cleaned.slice(start, end + 1));
+}
+
+async function generateGeminiJson(apiKey: string, prompt: string): Promise<unknown> {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    }),
+    signal: AbortSignal.timeout(30000),
+  });
+  if (!res.ok) {
+    const details = await res.text().catch(() => "");
+    throw new Error(`Gemini API error ${res.status}${details ? `: ${details.slice(0, 300)}` : ""}`);
+  }
+  const json = await res.json();
+  const content = json?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text ?? "").join("") ?? "";
+  if (!content) throw new Error("Gemini returned an empty response");
+  return extractJsonObject(content);
+}
 async function fetchArticleText(url: string): Promise<string> {
   try {
     const res = await fetch(url, {
@@ -118,21 +168,10 @@ export const analyzeArticle = createServerFn({ method: "POST" })
       throw new Error("LIMIT:GROWTH:You've reached your 200/month limit. Upgrade to Enterprise for unlimited.");
     }
 
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("AI gateway not configured");
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("Gemini API key not configured");
 
     const articleText = await fetchArticleText(data.article_url);
-
-    const gateway = createOpenAICompatible({
-      name: "lovable",
-      baseURL: "https://ai.gateway.lovable.dev/v1",
-      apiKey,
-      supportsStructuredOutputs: true,
-      headers: {
-        "X-Lovable-AIG-SDK": "vercel-ai-sdk",
-      },
-    });
-    const model = gateway("google/gemini-2.5-flash");
 
     const langName = LANG_NAMES[data.language];
     const system = `You are TestKaro's AEO (Answer Engine Optimization) expert helping Indian news publishers rank in Google Discover, Google Search AI Overviews, ChatGPT, and Perplexity.
@@ -158,16 +197,7 @@ Return:
 - discover_ready: boolean
 - discover_checks: 5-7 specific checks (e.g., "E-E-A-T author byline present", "High-quality 1200x800 image", "Headline under 90 chars") with pass/fail and a one-line note
 - recommendations: 4-6 prioritized action items in ${langName}`;
-
-    const { object: out } = await generateObject({
-      model,
-      schema: AeoSchema,
-      schemaName: "aeo_analysis",
-      schemaDescription: "A complete AEO and Google Discover readiness report with the exact requested fields.",
-      system,
-      prompt,
-      temperature: 0.2,
-    });
+    const out = AeoSchema.parse(await generateGeminiJson(apiKey, `${system}\n\n${prompt}\n\nReturn ONLY a valid JSON object. Do not include markdown.`));
 
     const faqSchema = buildFaqSchema(out.faqs, data.article_url);
 
