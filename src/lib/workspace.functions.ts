@@ -3,6 +3,14 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const LANGS = ["hi", "bn", "ta", "te", "mr", "gu", "kn", "ml", "pa", "en"] as const;
+type Lang = (typeof LANGS)[number];
+
+function getDisplayName(claims: {
+  email?: string;
+  user_metadata?: { full_name?: string; name?: string };
+}) {
+  return claims.user_metadata?.full_name ?? claims.user_metadata?.name ?? claims.email?.split("@")[0] ?? null;
+}
 
 export const getMyWorkspace = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -114,6 +122,81 @@ export const createPublication = createServerFn({ method: "POST" })
     if (profileError) throw new Error(profileError.message);
 
     return { publication: pub };
+  });
+
+export const ensurePublication = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        default_language: z.enum(LANGS),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const claims = context.claims as {
+      email?: string;
+      user_metadata?: { full_name?: string; name?: string };
+    };
+
+    const { data: profile, error: profileReadError } = await supabase
+      .from("profiles")
+      .select("publication_id")
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (profileReadError) throw new Error(profileReadError.message);
+
+    if (profile?.publication_id) {
+      const { data: existingPublication, error } = await supabase
+        .from("publications")
+        .select("*")
+        .eq("id", profile.publication_id)
+        .maybeSingle();
+      if (error) throw new Error(error.message);
+      if (existingPublication) return { publication: existingPublication };
+    }
+
+    const { data: ownedPublication, error: ownedError } = await supabase
+      .from("publications")
+      .select("*")
+      .eq("owner_id", userId)
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (ownedError) throw new Error(ownedError.message);
+
+    let publication = ownedPublication;
+    if (!publication) {
+      const { data: createdPublication, error } = await supabase
+        .from("publications")
+        .insert({
+          name: "Story Pulse",
+          domain: null,
+          default_language: data.default_language as Lang,
+          owner_id: userId,
+        })
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      publication = createdPublication;
+    }
+
+    const { error: profileWriteError } = await supabase
+      .from("profiles")
+      .upsert(
+        {
+          user_id: userId,
+          email: claims.email ?? null,
+          display_name: getDisplayName(claims),
+          publication_id: publication.id,
+          preferred_language: data.default_language,
+        },
+        { onConflict: "user_id" },
+      );
+    if (profileWriteError) throw new Error(profileWriteError.message);
+
+    return { publication };
   });
 
 export const seedDemoData = createServerFn({ method: "POST" })

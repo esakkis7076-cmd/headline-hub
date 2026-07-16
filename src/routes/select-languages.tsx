@@ -1,9 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { TKLogo } from "@/components/marketing/TKLogo";
 import { LanguageMultiSelect, type LanguageCode } from "@/components/ui/language-multi-select";
+import { ensurePublication } from "@/lib/workspace.functions";
 
 export const Route = createFileRoute("/select-languages")({
   component: SelectLanguagesPage,
@@ -17,6 +19,7 @@ export const Route = createFileRoute("/select-languages")({
 
 function SelectLanguagesPage() {
   const navigate = useNavigate();
+  const ensurePub = useServerFn(ensurePublication);
   const [selectedLanguages, setSelectedLanguages] = useState<LanguageCode[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -51,6 +54,8 @@ function SelectLanguagesPage() {
         );
 
       if (error) throw error;
+
+      await ensurePub({ data: { default_language: selectedLanguages[0] } });
 
       toast.success("Languages saved successfully");
       navigate({ to: "/aeo" });

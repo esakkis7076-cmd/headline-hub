@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import { analyzeArticle, listAnalyses } from "@/lib/aeo.functions";
-import { getMyWorkspace } from "@/lib/workspace.functions";
+import { ensurePublication, getMyWorkspace } from "@/lib/workspace.functions";
 import { checkIsAdmin } from "@/lib/admin.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Sparkles, Copy, Check, RefreshCw, ChevronDown } from "lucide-react";
@@ -43,6 +43,7 @@ function AeoPage() {
   const analyze = useServerFn(analyzeArticle);
   const list = useServerFn(listAnalyses);
   const getWs = useServerFn(getMyWorkspace);
+  const ensurePub = useServerFn(ensurePublication);
   const qc = useQueryClient();
   const checkAdmin = useServerFn(checkIsAdmin);
   const [url, setUrl] = useState("");
@@ -90,7 +91,10 @@ function AeoPage() {
   }, [availableLanguages, lang]);
 
   const mut = useMutation({
-    mutationFn: (data: { article_url: string; language: Lang }) => analyze({ data }),
+    mutationFn: async (data: { article_url: string; language: Lang }) => {
+      await ensurePub({ data: { default_language: data.language } });
+      return analyze({ data });
+    },
     onSuccess: (res) => {
       toast.success("Analysis complete");
       setRecs(res.recommendations);
