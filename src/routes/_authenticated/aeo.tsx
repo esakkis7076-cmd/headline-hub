@@ -55,15 +55,19 @@ function AeoPage() {
   const workspace = useQuery({ queryKey: ["workspace"], queryFn: () => getWs() });
   const adminQ = useQuery({ queryKey: ["is-admin"], queryFn: () => checkAdmin() });
 
-  // Filter languages based on user's selection
+  const allLanguages = ["hi", "bn", "ta", "te", "mr", "gu", "kn", "ml", "pa", "en"] as Lang[];
+
+  // Filter languages based on user selection after workspace data is loaded.
   const availableLanguages = useMemo(() => {
+    if (workspace.isPending) return [] as Lang[];
+
     const selectedLangs = workspace.data?.profile?.selected_languages;
     if (!selectedLangs || selectedLangs.length === 0) {
-      // Fallback: show all languages for existing users
-      return ["hi", "bn", "ta", "te", "mr", "gu", "kn", "ml", "pa", "en"] as Lang[];
+      // Fallback only after loading finishes, for existing users with no saved selection.
+      return allLanguages;
     }
     return selectedLangs as Lang[];
-  }, [workspace.data?.profile?.selected_languages]);
+  }, [workspace.isPending, workspace.data?.profile?.selected_languages]);
 
   // Set default language to first available if current is not in available
   useEffect(() => {
@@ -120,14 +124,14 @@ function AeoPage() {
         className="mt-6 rounded-2xl border border-border/60 bg-card/30 p-5 flex flex-col sm:flex-row gap-3"
       >
         <input required type="url" placeholder="https://yourpub.in/article" value={url} onChange={(e) => setUrl(e.target.value)} className="flex-1 rounded-lg border border-border bg-background px-3 py-2.5 text-sm" />
-        <select value={lang} onChange={(e) => setLang(e.target.value as Lang)} className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm">
+        <select value={lang} onChange={(e) => setLang(e.target.value as Lang)} disabled={workspace.isPending || availableLanguages.length === 0} className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm disabled:opacity-50">
           {availableLanguages.map((l) => (
             <option key={l} value={l}>
               {l === "hi" ? "Hindi" : l === "bn" ? "Bengali" : l === "ta" ? "Tamil" : l === "te" ? "Telugu" : l === "mr" ? "Marathi" : l === "gu" ? "Gujarati" : l === "kn" ? "Kannada" : l === "ml" ? "Malayalam" : l === "pa" ? "Punjabi" : "English"}
             </option>
           ))}
         </select>
-        <button type="submit" disabled={mut.isPending} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+        <button type="submit" disabled={mut.isPending || workspace.isPending || availableLanguages.length === 0} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
           <Sparkles size={14} />
           {mut.isPending ? "Analyzing…" : "Analyze"}
         </button>
@@ -435,3 +439,4 @@ function PlanExpiredState({ message }: { message: string }) {
     </div>
   );
 }
+
