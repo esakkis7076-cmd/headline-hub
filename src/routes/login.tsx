@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { TKLogo } from "@/components/marketing/TKLogo";
 import { toast } from "sonner";
 import { LanguageMultiSelect, type LanguageCode } from "@/components/ui/language-multi-select";
@@ -86,11 +85,13 @@ function LoginPage() {
   const handleGoogle = async () => {
     setLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: `${window.location.origin}/select-languages`,
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/select-languages`,
+        },
       });
-      if (result.error) throw result.error;
-      if (!result.redirected) navigate({ to: "/select-languages" });
+      if (error) throw error;
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Google sign-in failed");
       setLoading(false);
