@@ -5,6 +5,7 @@ import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import { analyzeArticle, listAnalyses } from "@/lib/aeo.functions";
 import { getMyWorkspace } from "@/lib/workspace.functions";
+import { checkIsAdmin } from "@/lib/admin.functions";
 import { Sparkles, Copy, Check, RefreshCw, ChevronDown } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/aeo")({
@@ -42,6 +43,7 @@ function AeoPage() {
   const list = useServerFn(listAnalyses);
   const getWs = useServerFn(getMyWorkspace);
   const qc = useQueryClient();
+  const checkAdmin = useServerFn(checkIsAdmin);
   const [url, setUrl] = useState("");
   const [lang, setLang] = useState<Lang>("hi");
   const [recs, setRecs] = useState<string[] | null>(null);
@@ -51,6 +53,7 @@ function AeoPage() {
 
   const history = useQuery({ queryKey: ["aeo"], queryFn: () => list() });
   const workspace = useQuery({ queryKey: ["workspace"], queryFn: () => getWs() });
+  const adminQ = useQuery({ queryKey: ["is-admin"], queryFn: () => checkAdmin() });
 
   // Filter languages based on user's selection
   const availableLanguages = useMemo(() => {
@@ -93,9 +96,11 @@ function AeoPage() {
 
   const latest = mut.data?.analysis ?? history.data?.analyses[0];
   const profile = workspace.data?.profile;
-  const expiredMessage = profile?.plan_tier === "trial" && profile.trial_end_date && new Date(profile.trial_end_date) < new Date()
+  const isAdmin = adminQ.data?.isAdmin === true;
+  const shouldCheckPlan = adminQ.isError || (adminQ.isSuccess && !isAdmin);
+  const expiredMessage = shouldCheckPlan && profile?.plan_tier === "trial" && profile.trial_end_date && new Date(profile.trial_end_date) < new Date()
     ? getPlanEndedMessage("trial")
-    : (profile?.plan_tier === "starter" || profile?.plan_tier === "growth" || profile?.plan_tier === "enterprise") &&
+    : shouldCheckPlan && (profile?.plan_tier === "starter" || profile?.plan_tier === "growth" || profile?.plan_tier === "enterprise") &&
       profile.plan_end_date &&
       new Date(profile.plan_end_date) < new Date()
       ? getPlanEndedMessage(profile.plan_tier)

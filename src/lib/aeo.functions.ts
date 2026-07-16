@@ -143,29 +143,41 @@ export const analyzeArticle = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!profile?.publication_id) throw new Error("Create a publication first");
 
-    // Usage limit enforcement
-    if (profile.account_blocked) {
-      throw new Error("LIMIT:BLOCKED:Your account has been suspended. Contact support.");
-    }
+    const { data: adminRole } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    const isAdmin = !!adminRole;
+
+    // Usage limit enforcement does not apply to admins.
     const tier = profile.plan_tier ?? "trial";
-    if (tier === "free" && (profile.api_calls_all_time ?? 0) >= 3) {
-      throw new Error("LIMIT:FREE:You've used your 3 free headline sets. Upgrade to keep going.");
-    }
-    if (tier === "trial" && profile.trial_end_date && new Date(profile.trial_end_date) < new Date()) {
-      throw new Error("LIMIT:TRIAL:Your free trial has ended. Please contact admin to activate your plan.");
-    }
-    if (["starter", "growth", "enterprise"].includes(tier) && profile.plan_end_date && new Date(profile.plan_end_date) < new Date()) {
-      throw new Error(`LIMIT:${tier.toUpperCase()}:Your ${tier} plan has ended. Please contact admin to activate your plan.`);
+    if (!isAdmin) {
+      if (profile.account_blocked) {
+        throw new Error("LIMIT:BLOCKED:Your account has been suspended. Contact support.");
+      }
+      if (tier === "free" && (profile.api_calls_all_time ?? 0) >= 3) {
+        throw new Error("LIMIT:FREE:You've used your 3 free headline sets. Upgrade to keep going.");
+      }
+      if (tier === "trial" && profile.trial_end_date && new Date(profile.trial_end_date) < new Date()) {
+        throw new Error("LIMIT:TRIAL:Your free trial has ended. Please contact admin to activate your plan.");
+      }
+      if (["starter", "growth", "enterprise"].includes(tier) && profile.plan_end_date && new Date(profile.plan_end_date) < new Date()) {
+        throw new Error(`LIMIT:${tier.toUpperCase()}:Your ${tier} plan has ended. Please contact admin to activate your plan.`);
+      }
     }
     const selectedLanguages = profile.selected_languages as Lang[] | null;
     if (selectedLanguages?.length && !selectedLanguages.includes(data.language)) {
       throw new Error("Selected language is not enabled for your account. Please contact admin.");
     }
-    if (tier === "starter" && (profile.api_calls_this_month ?? 0) >= 50) {
-      throw new Error("LIMIT:STARTER:You've used all 50 headline sets this month. Upgrade to Growth for 200/month.");
-    }
-    if (tier === "growth" && (profile.api_calls_this_month ?? 0) >= 200) {
-      throw new Error("LIMIT:GROWTH:You've reached your 200/month limit. Upgrade to Enterprise for unlimited.");
+    if (!isAdmin) {
+      if (tier === "starter" && (profile.api_calls_this_month ?? 0) >= 50) {
+        throw new Error("LIMIT:STARTER:You've used all 50 headline sets this month. Upgrade to Growth for 200/month.");
+      }
+      if (tier === "growth" && (profile.api_calls_this_month ?? 0) >= 200) {
+        throw new Error("LIMIT:GROWTH:You've reached your 200/month limit. Upgrade to Enterprise for unlimited.");
+      }
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
