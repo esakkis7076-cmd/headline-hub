@@ -369,40 +369,6 @@ function SchemaBlock({ schema }: { schema: unknown }) {
   );
 }
 
-const EMOTION_WORDS = [
-  // English
-  "shocking","amazing","incredible","unbelievable","stunning","heartbreaking","tragic",
-  "secret","revealed","mystery","surprising","powerful","urgent","huge","massive","win","loss",
-  "warning","danger","crisis","hope","love","fear","dream","truth",
-  // Hindi (Devanagari)
-  "बड़ा","बड़ी","चौंकाने","रहस्य","खुलासा","खतरा","संकट","जीत","हार","उम्मीद","डर",
-  // Tamil
-  "அதிர்ச்சி","ரகசியம்","ஆபத்து","வெற்றி","தோல்வி",
-  // Bengali
-  "চাঞ্চল্যকর","রহস্য","বিপদ","জয়","পরাজয়",
-];
-
-function scoreHeadline(text: string): { label: string; pass: boolean }[] {
-  const t = text.trim();
-  const lower = t.toLowerCase();
-  const chars = t.length;
-  const words = t.split(/\s+/).filter(Boolean);
-  const firstFour = words.slice(0, 4).join(" ").toLowerCase();
-  // Heuristic "primary keyword" = the longest content word (≥5 chars)
-  const longest = [...words].sort((a, b) => b.length - a.length)[0] ?? "";
-  const keywordEarly = longest.length >= 5 && firstFour.includes(longest.toLowerCase());
-  const lengthIdeal = chars >= 50 && chars <= 75;
-  const hasEmotion = EMOTION_WORDS.some((w) => lower.includes(w.toLowerCase()));
-  const hasNumber = /\b\d+\b|[०-९]|[०-९]|[০-৯]|[౦-౯]|[௦-௯]|[೦-೯]|[൦-൯]|[੦-੯]/.test(t);
-
-  return [
-    { label: keywordEarly ? "Primary keyword appears in first 4 words" : "Front-load the primary keyword", pass: keywordEarly },
-    { label: lengthIdeal ? `Length is ${chars} chars (ideal 50–75)` : `Length is ${chars} chars (aim for 50–75)`, pass: lengthIdeal },
-    { label: hasEmotion ? "Emotional trigger word detected" : "No emotional trigger word detected", pass: hasEmotion },
-    { label: hasNumber ? "Contains a number / data point" : "Consider adding a number or data point", pass: hasNumber },
-  ];
-}
-
 function HeadlineCard({ label, tint, text }: { label: string; tint: string; text: string }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
@@ -410,9 +376,6 @@ function HeadlineCard({ label, tint, text }: { label: string; tint: string; text
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
-  const checks = scoreHeadline(text);
-  const passed = checks.filter((c) => c.pass).length;
-  const score = Math.round((passed / checks.length) * 100);
   return (
     <div className="rounded-xl border border-border/60 bg-background/40 p-4 flex flex-col gap-2">
       <div className="flex items-center justify-between">
@@ -424,8 +387,6 @@ function HeadlineCard({ label, tint, text }: { label: string; tint: string; text
       </div>
       <p className="text-sm leading-snug">{text}</p>
       <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-        <span className="tabular-nums font-semibold text-foreground">{score}/100</span>
-        <span>·</span>
         <span>{text.length} chars</span>
       </div>
     </div>
