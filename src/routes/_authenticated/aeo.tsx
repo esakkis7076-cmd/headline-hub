@@ -428,14 +428,6 @@ function HeadlineCard({ label, tint, text }: { label: string; tint: string; text
         <span>·</span>
         <span>{text.length} chars</span>
       </div>
-      <ul className="mt-1 space-y-1">
-        {checks.map((c, i) => (
-          <li key={i} className="flex items-start gap-1.5 text-[11px]">
-            <span className={c.pass ? "text-emerald-400" : "text-rose-400"}>{c.pass ? "✓" : "✗"}</span>
-            <span className={c.pass ? "text-muted-foreground" : "text-foreground/80"}>{c.label}</span>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
