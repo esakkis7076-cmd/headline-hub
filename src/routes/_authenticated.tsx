@@ -13,8 +13,8 @@ export const Route = createFileRoute("/_authenticated")({
 
 const NAV_ITEMS = [
   { to: "/aeo", label: "AEO analyzer", icon: Sparkles },
-  { to: "/competitor", label: "Competitor", icon: Target },
-  { to: "/content-gap", label: "Content Gap", icon: GitCompare },
+  { to: "/competitor", label: "Competitor (Beta)", icon: Target },
+  { to: "/content-gap", label: "Content Gap (Beta)", icon: GitCompare },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
