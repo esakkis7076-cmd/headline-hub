@@ -106,7 +106,7 @@ async function fetchArticleText(url: string): Promise<string> {
   try {
     const res = await fetch(url, {
       headers: { "User-Agent": "TestKaroBot/1.0 (+https://testkaro.in)" },
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return "";
     const html = await res.text();
