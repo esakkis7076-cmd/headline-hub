@@ -337,15 +337,36 @@ function RecentRow({
       </div>
       {open && (hl.discover || hl.seo || hl.social) && (
         <div className="mt-3 ml-5 grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-          {hl.discover && <div className="rounded bg-background/60 p-2"><b className="text-rose-400">Discover</b><div className="mt-1">{hl.discover}</div></div>}
-          {hl.seo && <div className="rounded bg-background/60 p-2"><b className="text-sky-400">SEO</b><div className="mt-1">{hl.seo}</div></div>}
-          {hl.social && <div className="rounded bg-background/60 p-2"><b className="text-emerald-400">Social</b><div className="mt-1">{hl.social}</div></div>}
+          {hl.discover && <RecentHeadlineCard label="Discover" tint="text-rose-400" text={hl.discover} />}
+          {hl.seo && <RecentHeadlineCard label="SEO" tint="text-sky-400" text={hl.seo} />}
+          {hl.social && <RecentHeadlineCard label="Social" tint="text-emerald-400" text={hl.social} />}
         </div>
       )}
     </div>
   );
 }
 
+function RecentHeadlineCard({ label, tint, text }: { label: string; tint: string; text: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <div className="rounded bg-background/60 p-2">
+      <div className="flex items-center justify-between gap-2">
+        <b className={tint}>{label}</b>
+        <button onClick={copy} className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-[11px] hover:bg-accent">
+          {copied ? <Check size={11} /> : <Copy size={11} />}
+          {copied ? "Copied!" : "Copy"}
+        </button>
+      </div>
+      <div className="mt-1">{text}</div>
+    </div>
+  );
+}
 function SchemaBlock({ schema }: { schema: unknown }) {
   const [copied, setCopied] = useState(false);
   const json = JSON.stringify(schema, null, 2);
