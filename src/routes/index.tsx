@@ -520,7 +520,7 @@ const HTML = `<style>
     font-family: 'Playfair Display', serif;
     font-size: 3rem;
     font-weight: 900;
-    color: var(--paper-dark);
+    color: var(--accent);
     line-height: 1;
     margin-bottom: 0.75rem;
     display: block;
