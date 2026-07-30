@@ -79,15 +79,15 @@ const HTML = `<style>
   }
 
   .nav-logo {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900;
-    font-size: 1.3rem;
-    color: var(--paper);
-    letter-spacing: -0.01em;
+    display: inline-flex;
+    align-items: center;
     text-decoration: none;
   }
-  .nav-logo span { color: var(--accent); }
-
+  .nav-logo img {
+    display: block;
+    height: 24px;
+    width: auto;
+  }
   .nav-links {
     display: flex;
     gap: 2rem;
@@ -887,12 +887,14 @@ const HTML = `<style>
     }
   }
   .footer-brand {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900;
-    font-size: 1.1rem;
-    color: var(--paper);
+    display: inline-flex;
+    align-items: center;
   }
-  .footer-brand span { color: var(--accent); }
+  .footer-brand img {
+    display: block;
+    height: 22px;
+    width: auto;
+  }
   .footer-meta {
     font-family: 'DM Mono', monospace;
     font-size: 0.65rem;
@@ -997,7 +999,7 @@ const HTML = `<style>
 </style>
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">Story<span> Pulse</span></a>
+  <a href="#" class="nav-logo" aria-label="Story Pulse"><img src="/logo-full-dark.png" alt="Story Pulse" /></a>
   <ul class="nav-links">
     <li><a href="#how">How it works</a></li>
     <li><a href="#languages">Languages</a></li>
@@ -1316,7 +1318,7 @@ const HTML = `<style>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-brand">Story<span> Pulse</span></div>
+  <div class="footer-brand"><img src="/logo-full-dark.png" alt="Story Pulse" /></div>
   <div class="footer-meta">© 2026 STORY PULSE · BUILT FOR INDIAN NEWSROOMS</div>
   <div class="footer-contact">
     <strong>Contact Us :</strong>
