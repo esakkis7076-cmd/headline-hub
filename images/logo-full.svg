@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 80" width="360" height="80">
+  <defs>
+    <linearGradient id="pulseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F97316"/>
+      <stop offset="100%" style="stop-color:#FB923C"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Pulse Icon -->
+  <g transform="translate(8, 16)">
+    <!-- Rounded square background -->
+    <rect x="0" y="0" width="48" height="48" rx="12" fill="#0F172A"/>
+    <!-- Pulse line -->
+    <polyline points="8,28 14,28 18,14 22,38 26,20 30,32 34,24 40,24" 
+              fill="none" stroke="url(#pulseGrad)" stroke-width="2.8" 
+              stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Small dot at end -->
+    <circle cx="40" cy="24" r="2.5" fill="#F97316"/>
+  </g>
+  
+  <!-- Wordmark -->
+  <g transform="translate(68, 0)">
+    <!-- "Story" -->
+    <text x="0" y="42" font-family="'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif" 
+          font-size="34" font-weight="700" letter-spacing="-0.5" fill="#0F172A">Story</text>
+    <!-- "Pulse" -->
+    <text x="105" y="42" font-family="'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif" 
+          font-size="34" font-weight="700" letter-spacing="-0.5" fill="#F97316">Pulse</text>
+  </g>
+  
+  <!-- Tagline -->
+  <text x="68" y="62" font-family="'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif" 
+        font-size="11" font-weight="500" letter-spacing="2.5" fill="#64748B" text-transform="uppercase">AI HEADLINE OPTIMIZER</text>
+</svg>
