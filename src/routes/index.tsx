@@ -899,16 +899,31 @@ const HTML = `<style>
     color: rgba(245,240,232,0.2);
     letter-spacing: 0.06em;
   }
-  .footer-email {
+  .footer-contact {
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.75rem;
-    color: rgba(245,240,232,0.4);
-    margin-top: 0.5rem;
+    font-size: 0.72rem;
+    line-height: 1.65;
+    color: rgba(245,240,232,0.42);
+    text-align: right;
   }
-  .footer-email:hover {
+  .footer-contact strong {
+    display: block;
+    color: rgba(245,240,232,0.66);
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+  }
+  .footer-contact a {
+    color: rgba(245,240,232,0.58);
+    text-decoration: none;
+  }
+  .footer-contact a:hover {
     color: var(--accent);
   }
-
+  @media (max-width: 720px) {
+    .footer-contact {
+      text-align: left;
+    }
+  }
   /* ── ANIMATIONS ── */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(24px); }
@@ -1303,7 +1318,12 @@ const HTML = `<style>
 <footer>
   <div class="footer-brand">Story<span> Pulse</span></div>
   <div class="footer-meta">© 2026 STORY PULSE · BUILT FOR INDIAN NEWSROOMS</div>
-  <a href="mailto:info@storypulse.co" class="footer-email">info@storypulse.co</a>
+  <div class="footer-contact">
+    <strong>Contact Us :</strong>
+    <div>Name : Sankar</div>
+    <div>Mail id : <a href="mailto:info@storypulse.co">info@storypulse.co</a></div>
+    <div>Contact No : <a href="https://wa.me/916380992671" target="_blank" rel="noopener noreferrer">+91 63809 92671</a></div>
+  </div>
 </footer>
 `;
 
