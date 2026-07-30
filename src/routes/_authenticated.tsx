@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { TKLogo } from "@/components/marketing/TKLogo";
-import { Sparkles, LogOut, Settings, Menu, X, Target, GitCompare, Shield } from "lucide-react";
+import { Sparkles, LogOut, Settings, Menu, X, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -13,8 +13,6 @@ export const Route = createFileRoute("/_authenticated")({
 
 const NAV_ITEMS = [
   { to: "/aeo", label: "AEO analyzer", icon: Sparkles },
-  { to: "/competitor", label: "Competitor (Beta)", icon: Target },
-  { to: "/content-gap", label: "Content Gap (Beta)", icon: GitCompare },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
