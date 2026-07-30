@@ -1302,7 +1302,7 @@ const HTML = `<style>
 <!-- FOOTER -->
 <footer>
   <div class="footer-brand">Story<span> Pulse</span></div>
-  <div class="footer-meta">© 2026 STORY PULSE · BUILT FOR INDIAN NEWSROOMS · CHENNAI</div>
+  <div class="footer-meta">© 2026 STORY PULSE · BUILT FOR INDIAN NEWSROOMS</div>
   <a href="mailto:info@storypulse.co" class="footer-email">info@storypulse.co</a>
 </footer>
 `;
