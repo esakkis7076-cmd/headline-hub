@@ -76,6 +76,57 @@ function buildFaqSchema(
   };
 }
 
+function buildFallbackAeoPayload(articleUrl: string, language: Lang) {
+  const langName = LANG_NAMES[language];
+  const slug = (() => {
+    try {
+      const path = new URL(articleUrl).pathname.replace(/\/+$/, "");
+      const last = path.split("/").filter(Boolean).pop() ?? "article";
+      return decodeURIComponent(last).replace(/[-_]+/g, " ");
+    } catch {
+      return "article";
+    }
+  })();
+
+  return {
+    overall_score: 78,
+    position_zero_summary: `Demo mode: Gemini analysis could not run because the configured API key is invalid. Use this page layout to verify the section order, then replace GEMINI_API_KEY with a valid Google AI Studio key to generate live ${langName} results for "${slug}".`,
+    faqs: [
+      {
+        question: `What is ${slug}?`,
+        answer: `This demo summary is shown because the Gemini API key is invalid in the local environment.`,
+      },
+      {
+        question: "Why is demo mode shown?",
+        answer: "The app could not validate the configured Gemini API key, so it is returning a safe fallback payload.",
+      },
+      {
+        question: "How do I get real results?",
+        answer: "Replace GEMINI_API_KEY in your local environment with a valid Google AI Studio key and rerun the analysis.",
+      },
+    ],
+    headlines: {
+      discover: `Demo headline for ${slug}`,
+      seo: `${slug} - SEO headline preview`,
+      social: `Shareable update: ${slug}`,
+    },
+    discover_ready: false,
+    discover_checks: [
+      { label: "Gemini API key configured", pass: false, note: "Local environment is using an invalid API key." },
+      { label: "Fallback analysis available", pass: true, note: "The page stays usable for layout checks." },
+      { label: "Real article analysis", pass: false, note: "Enable a valid Gemini key to generate live results." },
+      { label: "Headlines rendered", pass: true, note: "Demo headlines are shown for UI verification." },
+      { label: "Recommendations rendered", pass: true, note: "Demo recommendations are shown below." },
+    ],
+    recommendations: [
+      "Replace the local GEMINI_API_KEY with a valid Google AI Studio key.",
+      "Re-run the analysis on the same article URL to confirm live results are working.",
+      "Use the fallback payload only for layout validation, not for production content decisions.",
+      "Check that Suggested headlines appears before Content-Recommendations.",
+    ],
+  };
+}
+
 function extractJsonObject(text: string): unknown {
   const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```$/i, "").trim();
   const start = cleaned.indexOf("{");
@@ -209,7 +260,17 @@ Return:
 - discover_ready: boolean
 - discover_checks: 5-7 specific checks (e.g., "E-E-A-T author byline present", "High-quality 1200x800 image", "Headline under 90 chars") with pass/fail and a one-line note
 - recommendations: 4-6 prioritized action items in ${langName}`;
-    const out = AeoSchema.parse(await generateGeminiJson(apiKey, `${system}\n\n${prompt}\n\nReturn ONLY a valid JSON object. Do not include markdown.`));
+    let out: z.infer<typeof AeoSchema>;
+    try {
+      out = AeoSchema.parse(await generateGeminiJson(apiKey, `${system}\n\n${prompt}\n\nReturn ONLY a valid JSON object. Do not include markdown.`));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (/API key not valid|API_KEY_INVALID|Gemini API error 400|Gemini API key not configured/i.test(message)) {
+        out = AeoSchema.parse(buildFallbackAeoPayload(data.article_url, data.language));
+      } else {
+        throw error;
+      }
+    }
 
     const faqSchema = buildFaqSchema(out.faqs, data.article_url);
 
